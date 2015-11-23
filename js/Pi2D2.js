@@ -25,7 +25,7 @@
         cardinalFont: { fill: '#ffffff', stroke: 'none', 'font-size': '40', 'text-anchor': 'middle' },
         compassFont: { fill: '#ffffff', stroke: 'none', 'font-size': '30', 'text-anchor': 'middle' },
         gmeter: { maxrate: 4, x: 50, y: 160, size: 120 },
-        vertspeed: {x: 440, y: 160, maxrate: 1  }
+        vertspeed: {x: 430, y: 160, maxrate: 1 }
     },
     
     values: {
@@ -55,8 +55,6 @@
         s = this.settings;
         v = this.values;
         svg = Snap("#svg");
-//        svg = Snap(s.screen.x, s.screen.y).attr( {id: 'primaryView' });
-//        svg = Snap(s.screen.x, s.screen.y).attr( {id: 'primaryView', display: 'none' });
         this.pitch = this.pitch();
         this.roll = this.roll();
         this.speed = this.speed();
@@ -66,13 +64,6 @@
         this.headingBug = this.headingBug();
         this.gmeter = this.gmeter();
         this.vertspeed = this.vertspeed();
-
-
-
-
-
-
-
 
 
     },
@@ -88,7 +79,7 @@
         tick = step / 2;
         gy = gy+step;
 
-        svg.line( gx, gy + size , gx, gy - size ).attr( { stroke: '#ffffff', 'stroke-width': '1' });
+        svg.line( gx, gy + size , gx, gy - size ).attr( { stroke: '#ffffff', 'stroke-width': '3' });
 
         xdec = gx - 10;
         ydec = gy;
@@ -108,10 +99,10 @@
         svg.text( xdec - 11, ydec+6, i).attr( { fill: '#ffffff', 'text-anchor': 'center' } );
 
         xdec = gx - 10;
-        ydec = gy;
-        for (i=0; i < s.gmeter.maxrate; i++)  {
+        ydec = gy+tick*2;
+        for (i=1; i < s.gmeter.maxrate; i++)  {
             svg.line( gx, ydec, xdec, ydec).attr( { stroke: '#ffffff', 'stroke-width': '2' });
-            svg.text( xdec - 11, ydec+6, i).attr( { fill: '#ffffff', 'text-anchor': 'center' } );
+            svg.text( xdec - 18, ydec+6, "-"+i).attr( { fill: '#ffffff', 'text-anchor': 'center' } );
             for ( j=0; j<2; j++) {
                if ( j == 5){
                     svg.line( gx, ydec, xdec+10, ydec).attr( { stroke: '#ffffff', 'stroke-width': '3' });
@@ -121,16 +112,22 @@
             } 
         }
         svg.line( gx, ydec, xdec, ydec).attr( { stroke: '#ffffff', 'stroke-width': '2' });
-        svg.text( xdec - 11, ydec+6, i).attr( { fill: '#ffffff', 'text-anchor': 'center' } );
+        svg.text( xdec - 18, ydec+6, "-" +i).attr( { fill: '#ffffff', 'text-anchor': 'center' } );
             
-        this.GLoad =  svg.polygon( gx +',' +gy +' ' +(gx+20) +',' +(gy-10) +' ' +(gx+20) +',' +(gy+10) ).attr( {fill: '#fff',  onclick: "Pi2D2.gmeter('reset');"});
+
+
         this.GLoad.animate( { transform: 't0,' +( ( step * 1 ) *-1)  }, 100 );
 
-        this.GloadMaxPos =  svg.polygon( gx +',' +gy +' ' +(gx+10) +',' +(gy-5) +' ' +(gx+10) +',' +(gy) ).attr( {fill: '#fff'} );
+        this.GloadMaxPos =  svg.polygon( gx +',' +gy +' ' +(gx+20) +',' +(gy-8) +' ' +(gx+20) +',' +(gy) ).attr( {fill: '#fff'} );
         this.GloadMaxPos.animate( { transform: 't0,' +( ( step * 1 ) *-1)  }, 100 );
 
-        this.GLoadMaxNeg =  svg.polygon( gx +',' +gy +' ' +(gx+10) +',' +(gy) +' ' +(gx+10) +',' +(gy+5) ).attr( {fill: '#fff'} );
+        this.GLoadMaxNeg =  svg.polygon( gx +',' +gy +' ' +(gx+20) +',' +(gy) +' ' +(gx+20) +',' +(gy+8) ).attr( {fill: '#fff'} );
         this.GLoadMaxNeg.animate( { transform: 't0,' +( ( step * 1 ) *-1)  }, 100 );
+
+        this.GLoad =  svg.group ( svg.polygon( gx +',' +gy +' ' +(gx+30) +',' +(gy-12) +' ' +(gx+30) +',' +(gy+12) ).attr( {fill: '#fff',  onclick: "Pi2D2.gmeter('reset');"}),        
+           svg.text( gx+15,gy+5, "G").attr( { fill: '#000000', 'text-anchor': 'center' } )        );
+
+
 //INOP
         this.inop.gmeter = svg.group(
             svg.rect(gx-25, (gy-size), gx, (size*2)).attr( {fill: 'red', opacity: .8 }),
@@ -185,7 +182,7 @@
         size = 90;
         step = size / maxrate;
         tick = step / 10;
-        svg.line( gx, gy + size , gx, gy - size ).attr( { stroke: '#ffffff', 'stroke-width': '2' });
+        svg.line( gx, gy + size , gx, gy - size ).attr( { stroke: '#ffffff', 'stroke-width': '3' });
         svg.line( gx, gy, gx+20, gy).attr( { stroke: '#ffffff', 'stroke-width': '2' });
         svg.text( gx+25, gy+6, '0').attr( { fill: '#ffffff', 'text-anchor': 'left' } );
         xdec = gx + 20;
@@ -202,7 +199,7 @@
             }
         }
         svg.line( gx, ydec, xdec, ydec).attr( { stroke: '#ffffff', 'stroke-width': '3' });
-        svg.text( xdec + 5, ydec+6, i).attr( { fill: '#ffffff', 'text-anchor': 'center' } );
+        svg.text( xdec + 5, ydec+6, i +"k").attr( { fill: '#ffffff', 'text-anchor': 'center' } );
 
         xdec = gx + 20;
         ydec = gy;
@@ -218,7 +215,7 @@
             } 
         }
         svg.line( gx, ydec, xdec, ydec).attr( { stroke: '#ffffff', 'stroke-width': '2' });
-        svg.text( xdec + 5, ydec+6, i).attr( { fill: '#ffffff', 'text-anchor': 'center' } );
+        svg.text( xdec + 5, ydec+6, i+"k").attr( { fill: '#ffffff', 'text-anchor': 'center' } );
         this.VertSpeed =  svg.polygon( gx +',' +gy +' ' +(gx-30) +',' +(gy-10) +' ' +(gx-30) +',' +(gy+10) ).attr( {fill: '#fff'} );
         
         //INOP
@@ -268,7 +265,7 @@
             if ( pitch == 'inop' ) { this.inop.pitch.attr( {display: 'inline'}); }
             else { this.inop.pitch.attr( {display: 'none'}); }
 
-            this.theworld.animate( { transform: 't0,'+(pitch*4) }, 200  );           
+            this.theworld.animate( { transform: 't0,'+(pitch*4) }, 100  );           
             return ( v.pitch = pitch);
         };
     },
@@ -359,7 +356,7 @@
             if ( roll == 'inop' ) { this.inop.roll.attr( {display: 'inline'}); }
             else { this.inop.roll.attr( {display: 'none'}); }
 
-            this.thewholeworld.animate( { transform: 'r' +roll +',240,160' }, 200 );
+            this.thewholeworld.animate( { transform: 'r' +roll +',240,160' }, 100 );
             return v.roll = roll;
         };
     },
@@ -432,7 +429,7 @@
                 
         return function( bug ) {
             if ( bug == null ) { return v.headingBug }
-            headingBug.animate( { transform: 'r' +bug +',' +Cx +',' +Cy }, 1000 );
+            headingBug.animate( { transform: 'r' +bug +',' +Cx +',' +Cy }, 100 );
             return v.headingBug = bug;
         }    
     },
@@ -552,7 +549,7 @@
                          );
              // Zero center line for speed tape
     
-        svg.polygon( '10,38 30,28 30, 48').attr( {fill: '#fff'} );
+        svg.polygon( '15,38 35,28 35, 48').attr( {fill: '#fff'} );
 //INOP
         this.inop.speed = svg.group(
                                 svg.rect(x-20, (y-25), 90, 30).attr( {fill: 'red', opacity: .8 }),
