@@ -10,13 +10,27 @@ Screen Resolution is 480x320 and intended for the 3.5" PiTFT hats.
 Loading instructions to come soon.
 Hope you think this is cool.
 
+### What Works?
+Pitch, Roll, Compass, Heading Bug and Altimeter
+* Heading Bug: Click the compass rose and set the heading bug
+* Altimeter: Click the altimeter to set. Altitude is based on pressure altimeter, not GPS
 
-
+### What is yet to work
+* G Meter: Pi2D2.gmeter(int); sets the bar. Max and Min are also marked, Click the hash to reset.
+* Vertical Speed: Pi2D2.vertspeed(int); sets the bar.
 
 ### Version
 haha
 
+### Configs
 
+Some items can be set up to suite your plane. Many more to come.
+At some point, I want these exposed in a menu.
+
+```sh
+Pi2D2.configs.vspeeds: { Vsi: 45, Vfe: 100, Vno: 140, Vne: 160 }
+Pi2D2.configs.gmeter.maxload=4;
+```
 
 ### Tech
 
