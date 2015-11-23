@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Pi2D2</title>
+  
+  <link rel="stylesheet" href="css/style.css" />
+  
+</head>
+
+<body style="font-family: Verdana, Arial, Helvetica" onload="Pi2D2.init();">
+   
+<svg class="my-svg" id="svg" version="1.1" xmlns="http://www.w3.org/2000/svg" height="320px" width="480px"></svg>
+
+<script src="js/minified.js"></script>
+<script src="js/jquery-1.11.3.min.js"></script>
+
+<script src="js/snap.svg-min.js"></script>
+<script src="js/Pi2D2.js"></script>
+<script src="js/test.js"></script>
+
+<!--      
+     <form name="navigate" >
+        Roll: <input type="text" id="roll" value="4" onchange="Pi2D2.roll( this.value );" />
+              <input type="button" value="inop" onclick="Pi2D2.roll('inop')" /> Arrows Left and Rigtht<br/>
+         
+        Pitch: <input type="text" id="pitch" value="10" onchange="Pi2D2.pitch( this.value );" /> 
+              <input type="button" value="inop" onclick="Pi2D2.pitch('inop')" /> Arrows Up and Down<br/>
+        
+        speed: <input type="text" id="speed" value="98" onchange="Pi2D2.speed( this.value );"/> 
+              <input type="button" value="inop" onclick="Pi2D2.speed('inop')" /> Q up A down<br/>
+        
+        altitude: <input type="text" id="altitude" value="3450" onchange="Pi2D2.altitude( this.value );" /> 
+              <input type="button" value="inop" onclick="Pi2D2.altitude('inop')" /> W up S down <br/>
+        
+        altimeter: <input type="text" id="altimeter" value="29.29" onchange="Pi2D2.altimeter( this.value );" /> <br/>
+        
+        heading: <input type="text" id="heading" value="35" onchange="Pi2D2.compass( this.value );"/>
+              <input type="button" value="inop" onclick="Pi2D2.compass('inop')" /> <br/>
+        
+        headingBug: <input type="text" id="headingBug" value="37" onchange="Pi2D2.headingBug( this.value );"/> <br/>
+        
+        G Load: <input type="text" id="gload" value="1.1" onchange="Pi2D2.gmeter( this.value );"/> 
+              <input type="button" value="inop" onclick="Pi2D2.gmeter('inop')" /> <br/>
+        
+        VSI: <input type="text" id="vertspeed" value="355" onchange="Pi2D2.vertspeed( this.value );"/> 
+              <input type="button" value="inop" onclick="Pi2D2.vertspeed('inop')" /> <br/>
+        
+        <input type="button" value="calculate" onclick="updatePi2D2()" /><br />
+      </form>
+--> 
+ 
+<div class="warning" id="power-up-warning">
+   <H2 class="warning_header">WARNING!!</H2>
+   <p class="warning_text">THE SOFTWARE IS PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND.
+Pi2D2 DOES NOT AND CANNOT WARRANT THE SERVICE FOR ACCURACY, RELIABILITY, COMPLETENESS, SAFETY OR FITNESS FOR USER'S PARTICULAR PURPOSES.
+THEREFORE, USER UNDERSTANDS AND AGREES THAT THE SERVICE AND SOFTWARE IS INTENDED SOLELY FOR INFORMATIONAL AND SITUATIONAL AWARENESS PURPOSES.</p>
+   <p class="warning_text">It's best to not be stupid</p>
+   <div class="warning_ok" onclick="document.getElementById('power-up-warning').style.display='none';">- Continue -</div>
+</div>
+
+<!-- 
+ <div class="warning" id="v_speed_configs">
+   <H2 class="warning_header">V Speed Config</H2>
+   <center>
+ <table class="vspeed_config" width="50%" border="1">
+   <tr>
+      <td>Vs0</td><td align="right">45</td><td align="center"><input type="button" value="Set" /> </td>
+   </tr>
+   <tr>
+      <td>Vs1</td><td align="right">40</td><td align="center"><input type="button" value="Set" /> </td>
+   </tr>
+   <tr>
+      <td>Vfe</td><td align="right">100</td><td align="center"><input type="button" value="Set" /> </td>
+   </tr>
+   <tr>
+      <td>Vno</td><td align="right">140</td><td align="center"><input type="button" value="Set" /> </td>
+   </tr>
+   <tr>
+      <td>Vs0</td><td align="right">160</td><td align="center"><input type="button" value="Set" /> </td>
+   </tr>
+ </table>
+
+<div class="number_button" onclick="Head_number_c();">Esc </div>
+<div class="number_button" onclick="Head_number_c();">OK </div>
+
+   </center>
+ </div>
+-->
+  
+  
+  
+<script>
+function ALT_number_write(x) {
+   var txtNum = document.getElementById("ALTnumber");
+   if (txtNum.value.length <= 5) {
+      if (x >= 0 && x <= 9) {
+         if (isNaN(txtNum.value))
+            txtNum.value = 0;
+            txtNum.value = (txtNum.value * 10) + x;
+         }
+      }
+   }
+   
+   
+   
+function Head_number_write(x) {
+   var txtNum = document.getElementById("HeadNumber");
+   if (txtNum.value.length <= 5) {
+      if (x >= 0 && x <= 9) {
+         if (isNaN(txtNum.value))
+            txtNum.value = 0;
+            txtNum.value = (txtNum.value * 10) + x;
+         }
+      }
+   }   
+</script>
+
+  
+  
+  
+  
+  
+  <div  class="keypad" id="HeadingBugInput" >
+   <div style="color:white; font-size: 27px; text-align: center; padding: 5px;">HeadingBug</div>
+<center><input class="text_box" type="text" id="HeadNumber" name="num" /></center><br/>
+<div class="number_button" onclick="Head_number_write(1);">1</div>
+<div class="number_button" onclick="Head_number_write(2);">2</div>
+<div class="number_button" onclick="Head_number_write(3);">3</div>
+<div class="number_button" onclick="Head_number_write(4);">4</div>
+<div class="number_button" onclick="Head_number_write(5);">5</div>
+<div class="number_button" onclick="Head_number_write(6);">6</div>
+<div class="number_button" onclick="Head_number_write(7);">7</div>
+<div class="number_button" onclick="Head_number_write(8);">8</div>
+<div class="number_button" onclick="document.getElementById('HeadingBugInput').style.display='none';">Esc</div>
+<div class="number_button" onclick="Head_number_write(9);">9</div>
+<div class="number_button" onclick="Head_number_write(0);">0</div>
+<div class="number_button" onclick="document.getElementById('HeadingBugInput').style.display='none';
+                                    Pi2D2.headingBug( document.getElementById('HeadNumber').value);"
+                                    >SET</div>
+  </div>
+
+ 
+ 
+ 
+ <div  class="keypad" id="AltimeterInput"  >
+   <div  style="color:white; font-size: 27px; text-align: center;padding: 5px;">Altimeter</div>
+<center><input class="text_box" type="text" id="ALTnumber" name="num" /></center><br/>
+<div class="number_button" onclick="ALT_number_write(1);">1</div>
+<div class="number_button" onclick="ALT_number_write(2);">2</div>
+<div class="number_button" onclick="ALT_number_write(3);">3</div>
+<div class="number_button" onclick="ALT_number_write(4);">4</div>
+<div class="number_button" onclick="ALT_number_write(5);">5</div>
+<div class="number_button" onclick="ALT_number_write(6);">6</div>
+<div class="number_button" onclick="ALT_number_write(7);">7</div>
+<div class="number_button" onclick="ALT_number_write(8);">8</div>
+<div class="number_button" onclick="document.getElementById('AltimeterInput').style.display='none';">Esc</div>
+<div class="number_button" onclick="ALT_number_write(9);">9</div>
+<div class="number_button" onclick="ALT_number_write(0);">0</div>
+<div class="number_button" onclick="document.getElementById('AltimeterInput').style.display='none';
+                                    Pi2D2.altimeter( ( document.getElementById('ALTnumber').value / 100));
+                                    Pi2D2.altitude(Pi2D2.altitude() );">SET</div></div>
+
+ 
+ </body>
+</html>
