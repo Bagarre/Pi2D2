@@ -5,8 +5,15 @@ Its a basic javascript driven SVG using snap.svg and gets AHRS data from Stratux
 
 I'm currently buggy as hell and Im beating the poor Stratx 10 times a second. IE TONS of room for improvement.
 
-Screen Resolution is 480x320 and intended for the 3.5" PiTFT hats.
- 
+Screen Resolution is 480x320 and intended for the 3.5" PiTFT hats. I built it in a way to allow larger screen resolutions and each widget can be moved around independently. The idea was, if it was a larger screen, re-organize the stuff to make sense vs make everythig bigger.
+
+### Installation 
+I was able to get it working on a Stratux image using a twisted variation of 
+http://blog.qruizelabs.com/2014/04/29/raspberrypi-kiosk-matchbox-uzbl/
+But I don't have it documented yet.
+
+If you really want a cheap way out, copy /www into /var/www/ahrs on a Stratux load and point your browser to http://yourstratus/ahrs/Pi2D2.html
+
 Loading instructions to come soon.
 Hope you think this is cool.
 
