@@ -1,37 +1,5 @@
 
-/*
 
-var MINI = require('minified'); 
-var $ = MINI.$, $$ = MINI.$$, EE = MINI.EE;
-
-
-$(function() {
-    $.request('post', '/echo/json/', {
-        json: $.toJSON({
-                text: 'some text',
-                array: [1, 2, 'three'],
-                object: {
-                    par1: 'another text',
-                    par2: [3, 2, 'one'],
-                    par3: {}
-                }
-            }),
-        delay: 3
-    }).then(function(response) {
-        showResponse($.parseJSON(response), $('#post'));
-    });
-    
-    function showResponse(obj, result) {
-        for (k in obj)
-            result.add(EE('li', k + ': ' + obj[k]));
-        result.set({$backgroundColor: '#FFFFCC'}).animate({$backgroundColor: '#fff'});
-    };
-});
-
-*/
-
-
-/*
 (function poll() {
     setTimeout(function() {
         $.ajax({
@@ -39,7 +7,7 @@ $(function() {
             type: "GET",
             success: function(data) {
                 console.log(data);
- //           Pi2D2.compass( data.Gyro_heading );
+            Pi2D2.compass( data.Gyro_heading );
             Pi2D2.pitch( data.Pitch);
             Pi2D2.roll(data.Roll);
             Pi2D2.altitude( data.Pressure_alt);
@@ -50,7 +18,6 @@ $(function() {
         })
     }, 100);
 })();
-*/
 
 
 
