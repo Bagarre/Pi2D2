@@ -28,9 +28,17 @@ Some items can be set up to suite your plane. Many more to come.
 At some point, I want these exposed in a menu.
 
 ```sh
-Pi2D2.configs.vspeeds: { Vsi: 45, Vfe: 100, Vno: 140, Vne: 160 }
+Pi2D2.configs.vspeeds = { Vsi: 45, Vfe: 100, Vno: 140, Vne: 160 };
 Pi2D2.configs.gmeter.maxload=4;
 ```
+Items can be moved around as well. 
+Want the airspeed in the bottom left?
+```sh
+Pi2D2.settings.speed.y = 250;
+```
+
+
+
 
 ### Tech
 
