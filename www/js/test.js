@@ -7,10 +7,10 @@
             type: "GET",
             success: function(data) {
                 console.log(data);
-            Pi2D2.compass( data.Gyro_heading );
-            Pi2D2.pitch( data.Pitch);
-            Pi2D2.roll(data.Roll);
-            Pi2D2.altitude( data.Pressure_alt);
+                Pi2D2.compass( data.Gyro_heading );
+                Pi2D2.pitch( data.Pitch );
+                Pi2D2.roll( data.Roll );
+                Pi2D2.altitude( data.Pressure_alt );
             },
             dataType: "json",
             complete: poll,
