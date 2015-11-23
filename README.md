@@ -15,6 +15,8 @@ But I don't have it documented yet.
 If you really want a cheap way out, copy /www into /var/www/ahrs on a Stratux load and point your browser to http://yourstratus/ahrs/Pi2D2.html
 
 Loading instructions to come soon.
+![alt text](https://raw.githubusercontent.com/Bagarre/Pi2D2/master/screenshots/Pi2D2Shot2.png)
+
 Hope you think this is cool.
 
 ### What Works?
@@ -23,8 +25,8 @@ Pitch, Roll, Compass, Heading Bug and Altimeter
 * Altimeter: Click the altimeter to set. Altitude is based on pressure altimeter, not GPS
 
 ### What is yet to work
-* G Meter: Pi2D2.gmeter(int); sets the bar. Max and Min are also marked, Click the hash to reset.
-* Vertical Speed: Pi2D2.vertspeed(int); sets the bar.
+* G Meter: `Pi2D2.gmeter(int);` sets the bar. Max and Min are also marked, Click the hash to reset.
+* Vertical Speed: `Pi2D2.vertspeed(int);` sets the bar.
 
 ### Version
 haha
