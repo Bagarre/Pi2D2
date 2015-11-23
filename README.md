@@ -30,7 +30,7 @@ Pitch, Roll, Compass, Heading Bug and Altimeter
 * Vertical Speed: `Pi2D2.vertspeed(int);` sets the bar.
 
 ### Version
-haha
+0.0.0.0.0.1
 
 ### Configs
 
