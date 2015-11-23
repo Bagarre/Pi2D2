@@ -1,9 +1,0 @@
-{
-  "name": "Pi2D2",
-  "main": "Pi2D2.html",
-  "window": {
-    "toolbar": false,
-    "width": 480,
-    "height": 320
-  }
-}
