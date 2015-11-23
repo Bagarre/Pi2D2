@@ -115,9 +115,6 @@
         svg.text( xdec - 18, ydec+6, "-" +i).attr( { fill: '#ffffff', 'text-anchor': 'center' } );
             
 
-
-        this.GLoad.animate( { transform: 't0,' +( ( step * 1 ) *-1)  }, 100 );
-
         this.GloadMaxPos =  svg.polygon( gx +',' +gy +' ' +(gx+20) +',' +(gy-8) +' ' +(gx+20) +',' +(gy) ).attr( {fill: '#fff'} );
         this.GloadMaxPos.animate( { transform: 't0,' +( ( step * 1 ) *-1)  }, 100 );
 
@@ -126,6 +123,7 @@
 
         this.GLoad =  svg.group ( svg.polygon( gx +',' +gy +' ' +(gx+30) +',' +(gy-12) +' ' +(gx+30) +',' +(gy+12) ).attr( {fill: '#fff',  onclick: "Pi2D2.gmeter('reset');"}),        
            svg.text( gx+15,gy+5, "G").attr( { fill: '#000000', 'text-anchor': 'center' } )        );
+        this.GLoad.animate( { transform: 't0,' +( ( step * 1 ) *-1)  }, 100 );
 
 
 //INOP
