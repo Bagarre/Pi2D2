@@ -1,6 +1,7 @@
 # Pi2D2
 
-Pi2D2 is a Dynon D2 knockoff based on the Raspberry Pi..get it?
+Pi2D2 is a Dynon D2 knockoff based on the Raspberry Pi. Pi 2 D2, Pi2D2.....get it?  get it???
+
 Its a basic javascript driven SVG using snap.svg and gets AHRS data from Stratux.
 
 I'm currently buggy as hell and Im beating the poor Stratx 10 times a second. IE TONS of room for improvement.
