@@ -2,7 +2,7 @@
 
 Pi2D2 is a Dynon D2 knockoff based on the Raspberry Pi. Pi 2 D2, Pi2D2.....get it?  get it???
 
-Its a basic javascript driven SVG using snap.svg and gets AHRS data from Stratux.
+Its a basic javascript driven SVG using snap.svg and gets AHRS data from https://github.com/cyoung/stratux.
 
 Its currently buggy as hell and I'm beating the poor Stratx 10 times a second. IE TONS of room for improvement.
 
@@ -13,7 +13,7 @@ I was able to get it working on a Stratux image using a twisted variation of
 http://blog.qruizelabs.com/2014/04/29/raspberrypi-kiosk-matchbox-uzbl/
 But I don't have it documented yet.
 
-If you really want a cheap way out, copy /www into /var/www/ahrs on a Stratux load and point your browser to http://yourstratus/ahrs/Pi2D2.html
+If you really want a cheap way out, copy /www into /var/www/ahrs on a Stratux load atand point your browser to http://yourstratux/ahrs/Pi2D2.html
 
 Loading instructions to come soon.
 ![alt text](https://raw.githubusercontent.com/Bagarre/Pi2D2/master/screenshots/Pi2D2Shot2.png)
