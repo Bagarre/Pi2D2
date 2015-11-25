@@ -1,21 +1,23 @@
-
+var doPoll = true;
 
 (function poll() {
     setTimeout(function() {
-        $.ajax({
-            url: "/getSituation",
-            type: "GET",
-            success: function(data) {
-                console.log(data);
-                Pi2D2.compass( data.Gyro_heading );
-                Pi2D2.pitch( data.Pitch );
-                Pi2D2.roll( data.Roll );
-                Pi2D2.altitude( data.Pressure_alt );
-            },
-            dataType: "json",
-            complete: poll,
-            timeout: 100
-        })
+        if ( document.getElementById('Pi2D2_SVG').style.display == 'block' ) {
+            $.ajax({
+                url: "/getSituation",
+                type: "GET",
+                success: function(data) {
+                    console.log(data);
+                    Pi2D2.compass( data.Gyro_heading );
+                    Pi2D2.pitch( data.Pitch );
+                    Pi2D2.roll( data.Roll );
+                    Pi2D2.altitude( data.Pressure_alt );
+                },
+                dataType: "json",
+                complete: poll,
+                timeout: 100
+            })
+        }
     }, 100);
 })();
 
@@ -110,13 +112,15 @@ window.ondevicemotion = function(event) {
 }
 
 function setAlt() {
-   document.getElementById('ALTnumber').value = '';
-   document.getElementById('AltimeterInput').style.display='inline';
+    document.getElementById('ALTnumber').value = '';
+    document.getElementById('Pi2D2_Main').style.display='none';
+    document.getElementById('AltimeterInput').style.display='inline';
 }
 
 function setBug() {
-   document.getElementById('HeadNumber').value = '';
-   document.getElementById('HeadingBugInput').style.display='inline';
+    document.getElementById('HeadNumber').value = '';
+    document.getElementById('Pi2D2_Main').style.display='none';
+    document.getElementById('HeadingBugInput').style.display='inline';
 }
 
 

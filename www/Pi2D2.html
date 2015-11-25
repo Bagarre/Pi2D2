@@ -10,7 +10,7 @@
 
 <body style="font-family: Verdana, Arial, Helvetica" onload="Pi2D2.init();">
    
-<svg class="my-svg" id="svg" version="1.1" xmlns="http://www.w3.org/2000/svg" height="320px" width="480px"></svg>
+<svg class="Pi2D2_SVG" id="Pi2D2_Main" version="1.1" xmlns="http://www.w3.org/2000/svg" height="320px" width="480px"></svg>
 
 <script src="js/minified.js"></script>
 <script src="js/jquery-1.11.3.min.js"></script>
@@ -56,7 +56,8 @@
 Pi2D2 DOES NOT AND CANNOT WARRANT THE SERVICE FOR ACCURACY, RELIABILITY, COMPLETENESS, SAFETY OR FITNESS FOR USER'S PARTICULAR PURPOSES.
 THEREFORE, USER UNDERSTANDS AND AGREES THAT THE SERVICE AND SOFTWARE IS INTENDED SOLELY FOR INFORMATIONAL AND SITUATIONAL AWARENESS PURPOSES.</p>
    <p class="warning_text">It's best to not be stupid</p>
-   <div class="warning_ok" onclick="document.getElementById('power-up-warning').style.display='none';">- Continue -</div>
+   <div class="warning_ok" onclick="document.getElementById('power-up-warning').style.display='none';
+   document.getElementById('Pi2D2_SVG').style.display='block';">- Continue -</div>
 </div>
 
 <!-- 
@@ -132,10 +133,12 @@ function Head_number_write(x) {
 <div class="number_button" onclick="Head_number_write(6);">6</div>
 <div class="number_button" onclick="Head_number_write(7);">7</div>
 <div class="number_button" onclick="Head_number_write(8);">8</div>
-<div class="number_button" onclick="document.getElementById('HeadingBugInput').style.display='none';">Esc</div>
+<div class="number_button" onclick="document.getElementById('HeadingBugInput').style.display='none';
+                                    document.getElementById('Pi2D2_SVG').style.display='block';">Esc</div>
 <div class="number_button" onclick="Head_number_write(9);">9</div>
 <div class="number_button" onclick="Head_number_write(0);">0</div>
 <div class="number_button" onclick="document.getElementById('HeadingBugInput').style.display='none';
+                                    document.getElementById('Pi2D2_SVG').style.display='block';
                                     Pi2D2.headingBug( document.getElementById('HeadNumber').value);"
                                     >SET</div>
   </div>
@@ -154,10 +157,12 @@ function Head_number_write(x) {
 <div class="number_button" onclick="ALT_number_write(6);">6</div>
 <div class="number_button" onclick="ALT_number_write(7);">7</div>
 <div class="number_button" onclick="ALT_number_write(8);">8</div>
-<div class="number_button" onclick="document.getElementById('AltimeterInput').style.display='none';">Esc</div>
+<div class="number_button" onclick="document.getElementById('AltimeterInput').style.display='none';
+                                    document.getElementById('Pi2D2_SVG').style.display='block';">Esc</div>
 <div class="number_button" onclick="ALT_number_write(9);">9</div>
 <div class="number_button" onclick="ALT_number_write(0);">0</div>
 <div class="number_button" onclick="document.getElementById('AltimeterInput').style.display='none';
+                                    document.getElementById('Pi2D2_SVG').style.display='block';
                                     Pi2D2.altimeter( ( document.getElementById('ALTnumber').value / 100));
                                     Pi2D2.altitude(Pi2D2.altitude() );">SET</div></div>
 

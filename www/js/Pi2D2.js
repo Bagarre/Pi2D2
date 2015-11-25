@@ -54,7 +54,7 @@
     init: function() {
         s = this.settings;
         v = this.values;
-        svg = Snap("#svg");
+        svg = Snap("#Pi2D2_Main");
         this.pitch = this.pitch();
         this.roll = this.roll();
         this.speed = this.speed();

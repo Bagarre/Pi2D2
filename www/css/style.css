@@ -1,6 +1,7 @@
   
   
   
+
 		
 .my-svg-container{
  display: inline-block;
@@ -12,8 +13,8 @@
 }
 
 
-.my-svg{ /* svg into : object, img or inline */
-  display: block;
+.Pi2D2_SVG{ /* svg into : object, img or inline */
+  display: none;
   position: absolute;
   top: 0;
   left: 0;
@@ -21,11 +22,12 @@
 	  
   
   
+
 .warning
 {
 width:480px;
 height:320px;
-display: none;
+display:inline;
 background-color:#000;
 border-top-right-radius:5px;
 border-top-left-radius:5px;
