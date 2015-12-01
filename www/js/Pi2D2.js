@@ -501,12 +501,12 @@
                 alt.dial[j].text( (x+tX), y, i).attr( s.largeFont ).attr( { transform: 'r-' +r +','+alt.centers[j] +',' +y }, 1000 );
             }
         }
-       alt.window = svg.group( alt.dial[0], alt.dial[1], alt.dial[2], alt.dial[3], alt.dial[4] ).attr({ clip: svg.rect((x-43), (y-35), 200, 45), onclick: "setAltBug()" });
+       alt.window = svg.group( alt.dial[0], alt.dial[1], alt.dial[2], alt.dial[3], alt.dial[4] ).attr({ clip: svg.rect((x-43), (y-35), 200, 40), onclick: "setAltBug()" });
 
 //INOP
         this.inop.altitude = svg.group(
-                                svg.rect(x, (y-25), 90, 30).attr( {fill: 'red', opacity: .8 }),
-                                svg.text(x+45, (y), "INOP").attr( s.cardinalFont )
+                                svg.rect(x-43, (y-35), 200, 40).attr( {fill: 'red', opacity: .8 }),
+                                svg.text(x+30, (y), "INOP").attr( s.cardinalFont )
                             ).attr( {display: 'none'});
 
         return function( altitude ){
@@ -576,8 +576,8 @@
         svg.polygon( '15,38 35,28 35, 48').attr( {fill: '#fff'} );
 //INOP
         this.inop.speed = svg.group(
-                                svg.rect(x-20, (y-25), 90, 30).attr( {fill: 'red', opacity: .8 }),
-                                svg.text(x+25, (y), "INOP").attr( s.cardinalFont )
+                                svg.rect(x-50, (y-35), 110, 45).attr( {fill: 'red', opacity: .8 }),
+                                svg.text(x+5, (y), "INOP").attr( s.cardinalFont )
                             ).attr( {display: 'none'});
 
         return function ( speed ){

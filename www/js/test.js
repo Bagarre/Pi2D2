@@ -1,20 +1,25 @@
-var lastPoll = (new Date).getTime();
+lastPoll = (new Date).getTime();
 
 
 (function checkINOP() {
-    setTimeout(function(){
-        if ( lastPoll - (new Date).getTime() == 3 ) {
+    setTimeout(function () {
+        console.log( lastPoll );
+        console.log( (new Date).getTime() );
+        tick = (new Date).getTime() - lastPoll;
+        if ( tick > 3000 ) {
+            console.log(tick );
             // 3 seconds since our last successful poll.
             Pi2D2.speed( 'inop' ); 
-            Pi2D2.compass( 'inop' )
+            Pi2D2.compass( 'inop' );
             Pi2D2.pitch( 'inop' );
             Pi2D2.roll( 'inop' );
-            Pi2D2.altitude( 'inop' )
-            checkINOP();
-        }
+            Pi2D2.altitude( 'inop' );
+            }
+
+        checkINOP();
     }, 1000);
 })();
-
+/*
 (function poll(){
     setTimeout(function(){
         $.ajax({ url: "/getSituation", success: function(data){
@@ -50,7 +55,7 @@ var lastPoll = (new Date).getTime();
     }, 100);
 })();
 
-
+*/
 
 function updatePi2D2() {
    Pi2D2.roll( document.getElementById("roll").value );
