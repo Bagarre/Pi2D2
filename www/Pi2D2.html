@@ -10,7 +10,7 @@
 
 <body style="font-family: Verdana, Arial, Helvetica" onload="Pi2D2.init();">
    
-<svg class="Pi2D2_SVG" id="Pi2D2_Main" version="1.1" xmlns="http://www.w3.org/2000/svg" height="320px" width="480px"></svg>
+<svg class="Pi2D2_SVG" id="Pi2D2_SVG" version="1.1" xmlns="http://www.w3.org/2000/svg" height="320px" width="480px"></svg>
 
 <script src="js/minified.js"></script>
 <script src="js/jquery-1.11.3.min.js"></script>
@@ -118,9 +118,33 @@ function Head_number_write(x) {
 </script>
 
   
+  <!--
   
   
-  
+  <div  class="keypad" id="NumberInput" >
+   <div style="color:white; font-size: 27px; text-align: center; padding: 5px;">Number Input</div>
+<center><input class="text_box" type="text" id="TheNumber" name="num" /></center><br/>
+<div class="number_button" onclick="number_write(1);">1</div>
+<div class="number_button" onclick="number_write(2);">2</div>
+<div class="number_button" onclick="number_write(3);">3</div>
+<div class="number_button" onclick="number_write(4);">4</div>
+<div class="number_button" onclick="number_write(5);">5</div>
+<div class="number_button" onclick="number_write(6);">6</div>
+<div class="number_button" onclick="number_write(7);">7</div>
+<div class="number_button" onclick="number_write(8);">8</div>
+<div class="number_button" onclick="document.getElementById('NumberInput').style.display='none';
+                                    document.getElementById('Pi2D2_SVG').style.display='block';">Esc</div>
+<div class="number_button" onclick="number_write(9);">9</div>
+<div class="number_button" onclick="number_write(0);">0</div>
+<div class="number_button" onclick="document.getElementById('NumberInput').style.display='none';
+                                    document.getElementById('Pi2D2_SVG').style.display='block';
+                                    Pi2D2.headingBug( document.getElementById('HeadNumber').value);"
+                                    >SET</div>
+
+
+-->
+
+
   
   <div  class="keypad" id="HeadingBugInput" >
    <div style="color:white; font-size: 27px; text-align: center; padding: 5px;">HeadingBug</div>
@@ -162,6 +186,35 @@ function Head_number_write(x) {
 <div class="number_button" onclick="ALT_number_write(9);">9</div>
 <div class="number_button" onclick="ALT_number_write(0);">0</div>
 <div class="number_button" onclick="document.getElementById('AltimeterInput').style.display='none';
+                                    document.getElementById('Pi2D2_SVG').style.display='block';
+                                    Pi2D2.altimeter( ( document.getElementById('ALTnumber').value / 100));
+                                    Pi2D2.altitude(Pi2D2.altitude() );">SET</div></div>
+
+
+
+
+
+
+
+
+
+
+ <div  class="keypad" id="AltBugInput"  >
+   <div  style="color:white; font-size: 27px; text-align: center;padding: 5px;">Altitude Bug</div>
+<center><input class="text_box" type="text" id="ALTBugnumber" name="num" /></center><br/>
+<div class="number_button" onclick="ALT_Bug_number_write(1);">1</div>
+<div class="number_button" onclick="ALT_Bug_number_write(2);">2</div>
+<div class="number_button" onclick="ALT_Bug_number_write(3);">3</div>
+<div class="number_button" onclick="ALT_Bug_number_write(4);">4</div>
+<div class="number_button" onclick="ALT_Bug_number_write(5);">5</div>
+<div class="number_button" onclick="ALT_Bug_number_write(6);">6</div>
+<div class="number_button" onclick="ALT_Bug_number_write(7);">7</div>
+<div class="number_button" onclick="ALT_Bug_number_write(8);">8</div>
+<div class="number_button" onclick="document.getElementById('AltimeterBugInput').style.display='none';
+                                    document.getElementById('Pi2D2_SVG').style.display='block';">Esc</div>
+<div class="number_button" onclick="ALT_Bug_number_write(9);">9</div>
+<div class="number_button" onclick="ALT_Bug_number_write(0);">0</div>
+<div class="number_button" onclick="document.getElementById('AltimeterBugInput').style.display='none';
                                     document.getElementById('Pi2D2_SVG').style.display='block';
                                     Pi2D2.altimeter( ( document.getElementById('ALTnumber').value / 100));
                                     Pi2D2.altitude(Pi2D2.altitude() );">SET</div></div>

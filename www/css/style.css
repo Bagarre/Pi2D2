@@ -14,7 +14,7 @@
 
 
 .Pi2D2_SVG{ /* svg into : object, img or inline */
-  display: none;
+  display: block;
   position: absolute;
   top: 0;
   left: 0;
@@ -27,7 +27,7 @@
 {
 width:480px;
 height:320px;
-display:inline;
+display:none;
 background-color:#000;
 border-top-right-radius:5px;
 border-top-left-radius:5px;

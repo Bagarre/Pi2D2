@@ -1,25 +1,44 @@
-var doPoll = true;
+var doPoll;
 
-(function poll() {
-    setTimeout(function() {
-        if ( document.getElementById('Pi2D2_SVG').style.display == 'block' ) {
+function doPolling() {
+    
+   doPoll = setTimeout(function() {
             $.ajax({
                 url: "/getSituation",
                 type: "GET",
                 success: function(data) {
                     console.log(data);
-                    Pi2D2.compass( data.Gyro_heading );
-                    Pi2D2.pitch( data.Pitch );
-                    Pi2D2.roll( data.Roll );
-                    Pi2D2.altitude( data.Pressure_alt );
+                    speed = Math.round( data.GroundSpeed);
+                    if ( Pi2D2.speed() != speed){
+                        Pi2D2.speed( speed );
+                    }
+                    heading = Math.round( data.Gyro_heading );
+                    if ( Pi2D2.compass() != heading ) {
+                        Pi2D2.compass( heading );
+                    }
+
+                    pitch = Math.round( data.Pitch );
+                    if ( Pi2D2.pitch != pitch) {
+                        Pi2D2.pitch( pitch );
+                    }
+
+                    roll = Math.round( data.Roll );
+                    if ( Pi2D2.roll() != roll ){
+                        Pi2D2.roll( roll );
+                    }
+
+                    altitude = Math.round( data.altitude );
+                    if ( Pi2D2.altitude() != altitude ) {
+                        Pi2D2.altitude( data.Pressure_alt );
+                    }
+
                 },
                 dataType: "json",
                 complete: poll,
                 timeout: 100
             })
-        }
-    }, 100);
-})();
+    }, 200);
+}
 
 
 
@@ -100,7 +119,7 @@ var value = 0;
 
       
       };
-
+/*
 window.ondevicemotion = function(event) {
 
    Pi2D2.roll( event.accelerationIncludingGravity.y * 8 );
@@ -110,16 +129,27 @@ window.ondevicemotion = function(event) {
    var Rotation = Math.round(event.alpha);
 
 }
+ */
 
 function setAlt() {
     document.getElementById('ALTnumber').value = '';
-    document.getElementById('Pi2D2_Main').style.display='none';
+    document.getElementById('Pi2D2_SVG').style.display='none';
     document.getElementById('AltimeterInput').style.display='inline';
 }
 
+
+function setAltBug() {
+    clearTimeout(doPoll);
+    document.getElementById('AltimeterInput').style.display='inline';
+
+    
+
+    Pi2D2.altitudeBug ( Pi2D2.altitude() );
+    
+}
 function setBug() {
-    document.getElementById('HeadNumber').value = '';
-    document.getElementById('Pi2D2_Main').style.display='none';
+    document.getElementById('HeadNumber').value = ((Pi2D2.compass() % 360)+360)%360;
+    document.getElementById('Pi2D2_SVG').style.display='none';
     document.getElementById('HeadingBugInput').style.display='inline';
 }
 

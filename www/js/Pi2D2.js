@@ -25,17 +25,19 @@
         cardinalFont: { fill: '#ffffff', stroke: 'none', 'font-size': '40', 'text-anchor': 'middle' },
         compassFont: { fill: '#ffffff', stroke: 'none', 'font-size': '30', 'text-anchor': 'middle' },
         gmeter: { maxrate: 4, x: 50, y: 160, size: 120 },
-        vertspeed: {x: 430, y: 160, maxrate: 1 }
+        vertspeed: {x: 430, y: 160, maxrate: 1 },
+        altitudeBug: {maxrange: 50 }
     },
     
     values: {
         pitch: 0,
         roll: 0,
-        speed: 0,
+        speed: 1,
         altitude: 0,
-        altimeter: 30.02,
+        altimeter: 29.92,
         heading: 0,
         headingBug: 0,
+        altitudeBug: 0,
         gload: {load: 0, maxpos: 1, maxneg: 1},
         vertspeed: {rate: 0}
     },
@@ -54,14 +56,15 @@
     init: function() {
         s = this.settings;
         v = this.values;
-        svg = Snap("#Pi2D2_Main");
+        svg = Snap("#Pi2D2_SVG");
         this.pitch = this.pitch();
         this.roll = this.roll();
-        this.speed = this.speed();
-        this.altitude = this.altitude();
-        this.altimeter = this.altimeter();
         this.compass = this.compass();
         this.headingBug = this.headingBug();
+        this.speed = this.speed();
+        this.altitudeBug = this.altitudeBug();
+        this.altitude = this.altitude();
+        this.altimeter = this.altimeter();
         this.gmeter = this.gmeter();
         this.vertspeed = this.vertspeed();
 
@@ -365,16 +368,20 @@
         Cx = s.compass.x;
         Cy = s.compass.y;
         Cr = s.compass.r;
+        y = s.screen.y;
         opacity = s.compass.opacity;
 
         //Build the compass
         compassRose = svg.group();
         compassRose.circle(Cx,Cy,Cr+10).attr( {'fill-opacity': 1} ).attr({onclick: "setBug();"});
+/*
         headingBug = compassRose.polygon(
                                     Cx +',' +((Cy-Cr)+25) +' '
                                     +(Cx-10) +',' +((Cy-Cr)-5) +' '
                                     +(Cx+10) +',' +((Cy-Cr)-5)
                                     ).attr( {fill: '#FF00FF'} );
+*/
+         headingBug = compassRose.line(Cx, Cy, Cx, (y*.5) ).attr( { 'stroke-width': '8',stroke: '#FF00FF'} ); 
 
         compassRose.text( Cx, (Cy - Cr*.94), 'N').attr( s.cardinalFont );
        
@@ -446,7 +453,25 @@
           };
     },
 
-    //////////////////////////////////
+   /////////////////////////////////////////////////////////////////////////////
+   altitudeBug: function() {
+
+      x = s.screen.x;
+      y = s.screen.y;
+      s.altitudeBug.step = 90 / s.altitudeBug.maxrange;;
+      // 1 foot == 1 step
+      altitudeBug = svg.circle( (x*.86), (y/2), 10).attr( {fill: '#FF00FF'} ); 
+
+      return function ( altBug ) {
+         if ( altBug == null ) { return v.altitudeBug; }
+
+         altitudeBug.animate( { transform: 't0,' +( (s.altitudeBug.step * ( v.altitude - altBug ) ) )  }, 100 );  
+         return  v.altitudeBug = altBug;
+      };
+      
+   },
+
+    ////////////////////////////////////////////////////////////////////////////
     altitude: function( ) {
         x = s.altitude.x;
         y = s.altitude.y;
@@ -476,7 +501,7 @@
                 alt.dial[j].text( (x+tX), y, i).attr( s.largeFont ).attr( { transform: 'r-' +r +','+alt.centers[j] +',' +y }, 1000 );
             }
         }
-       alt.window = svg.group( alt.dial[0], alt.dial[1], alt.dial[2], alt.dial[3], alt.dial[4] ).attr({ clip: svg.rect((x-43), (y-35), 200, 45) });
+       alt.window = svg.group( alt.dial[0], alt.dial[1], alt.dial[2], alt.dial[3], alt.dial[4] ).attr({ clip: svg.rect((x-43), (y-35), 200, 45), onclick: "setAltBug()" });
 
 //INOP
         this.inop.altitude = svg.group(
@@ -497,6 +522,7 @@
             alt.dial[2].animate( { transform: 'r' +Math.floor( correctedAltitude / 100 )*36 +',' +alt.centers[2] +',' +y }, 200 );  
             alt.dial[3].animate( { transform: 'r' +Math.floor( correctedAltitude / 10 )*36 +',' +alt.centers[3] +',' +y }, 200 );  
             alt.dial[4].animate( { transform: 'r' +Math.floor( correctedAltitude / 1 )*36 +',' +alt.centers[4] +',' +y }, 2 );  
+            altitudeBug.animate( { transform: 't0,' +( (s.altitudeBug.step * ( altitude - v.altitudeBug ) ) )  }, 100 );  
             return v.altitude = altitude;
         };
     },
