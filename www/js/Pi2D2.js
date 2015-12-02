@@ -7,19 +7,20 @@
 */
 
  var Pi2D2 =  {
-    
+   
     configs: {
-        vspeeds: { Vsi: 45, Vfe: 100, Vno: 140, Vne: 160 },
+      // things I expect the user will want to change
+        vspeeds: { Vso: 55, Vsi: 45, Vfe: 100, Vno: 140, Vne: 160 },
         gmeter: { maxload: 4},
         vsi: { maxrate: 1000 }
     },
 
-    
     settings: {
+    // things I expect a programming will want to change for a different sreen size
         screen: {x: 480, y:320},
         compass: {x: 240, y: 600, r: 350, opacity: .3 },
         altitude: { x: 385, y: 55 },
-        speed: { x: 80, y: 55, Vso: 55, Vsi: 45, Vfe: 100, Vno: 140, Vne: 160 },
+        speed: { x: 80, y: 55},
         smallFont: { fill: '#ffffff', stroke: 'none', 'font-size': '18', 'text-anchor': 'middle' },
         largeFont: { fill: '#ffffff', stroke: 'none', 'font-size': '45', 'text-anchor': 'middle' },
         cardinalFont: { fill: '#ffffff', stroke: 'none', 'font-size': '40', 'text-anchor': 'middle' },
@@ -30,9 +31,10 @@
     },
     
     values: {
+    // Current values of each widget
         pitch: 0,
         roll: 0,
-        speed: 1,
+        speed: 0,
         altitude: 0,
         altimeter: 29.92,
         heading: 0,
@@ -49,13 +51,13 @@
         speed: {},
         pitch: {},
         roll: {},
-        atittude: {}
-        
+        atittude: {}    
     },
     
     init: function() {
         s = this.settings;
         v = this.values;
+        c = this.configs;
         svg = Snap("#Pi2D2_SVG");
         this.pitch = this.pitch();
         this.roll = this.roll();
@@ -67,8 +69,6 @@
         this.altimeter = this.altimeter();
         this.gmeter = this.gmeter();
         this.vertspeed = this.vertspeed();
-
-
     },
     
     gmeter: function(){
@@ -373,7 +373,9 @@
 
         //Build the compass
         compassRose = svg.group();
-        compassRose.circle(Cx,Cy,Cr).attr( {'fill-opacity': 1} ).attr({onclick: "setBug();"});
+//        compassRose.circle(Cx,Cy,Cr).attr( {'fill-opacity': 1} ).attr({onclick: "setBug();"});
+        compassRose.circle(Cx,Cy,Cr).attr( {'fill-opacity': 1} ).attr({onclick: "setThis('headingBug', ((Pi2D2.compass() % 360)+360)%360 );"});
+
 /*
         headingBug = compassRose.polygon(
                                     Cx +',' +((Cy-Cr)+25) +' '
@@ -442,7 +444,8 @@
     altimeter: function() {
         svg.rect( 410, 260, 63, 35).attr({fill: 'none', stroke: '#ffffff', 'stroke-width': '1' } );
         svg.text( 440, 270, 'Alt').attr( {fill: '#ffffff', stroke: 'none', 'font-size': '10', 'text-anchor': 'middle' });
-        altBox = svg.text( 440, 290, v.altimeter).attr( {fill: '#ffffff', stroke: 'none', 'font-size': '20', 'text-anchor': 'middle', onclick: "setAlt();" });            
+        // TODO Make the number inputs be actual vs haing to *10 and /10 for decimals
+        altBox = svg.text( 440, 290, v.altimeter).attr( {fill: '#ffffff', stroke: 'none', 'font-size': '20', 'text-anchor': 'middle', onclick: "setThis('altimeter', Pi2D2.altimeter() *100 );" });            
      
        return function( altimeter ){
             if ( altimeter == null ) { return v.altimeter; }
@@ -499,11 +502,11 @@
                 alt.dial[j].text( (x+tX), y, i).attr( s.largeFont ).attr( { transform: 'r-' +r +','+alt.centers[j] +',' +y }, 1000 );
             }
         }
-       alt.window = svg.group( alt.dial[0], alt.dial[1], alt.dial[2], alt.dial[3], alt.dial[4] ).attr({ clip: svg.rect((x-43), (y-35), 200, 40), onclick: "setAltBug()" });
+       alt.window = svg.group( alt.dial[0], alt.dial[1], alt.dial[2], alt.dial[3], alt.dial[4] ).attr({ clip: svg.rect((x-43), (y-35), 200, 40), onclick: "setThis('altitudeBug', Pi2D2.altitude() )" });
 
 //INOP
         this.inop.altitude = svg.group(
-                                svg.rect(x-43, (y-35), 200, 40).attr( {fill: 'red', opacity: .8 }),
+                                svg.rect((x-43), (y-35), 200, 40).attr( {fill: 'red', opacity: .8 }),
                                 svg.text(x+30, (y), "INOP").attr( s.cardinalFont )
                             ).attr( {display: 'none'});
 
@@ -530,11 +533,11 @@
         // Build speed
         x = s.speed.x;
         y = s.speed.y;
-        Vso = s.speed.Vso;
-        Vsi = s.speed.Vsi;
-        Vfe = s.speed.Vfe;
-        Vno = s.speed.Vno;
-        Vne = s.speed.Vne; 
+        Vso = c.vspeeds.Vso;
+        Vsi = c.vspeeds.Vsi;
+        Vfe = c.vspeeds.Vfe;
+        Vno = c.vspeeds.Vno;
+        Vne = c.vspeeds.Vne; 
         
         asi = {   dial : [],
                   centers: [],
