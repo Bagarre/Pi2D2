@@ -1,13 +1,20 @@
-lastPoll = (new Date).getTime();
+var StratuxPoll = false;
+var lastPoll = ( new Date).getTime();
+
+function setZero() {
+    Pi2D2.roll(0);
+    Pi2D2.pitch(0);
+    Pi2D2.speed(0);
+    Pi2D2.altitude(0);
+    Pi2D2.compass(0);
+    Pi2D2.headingBug(0);
+}
 
 
 (function checkINOP() {
     setTimeout(function () {
-        console.log( lastPoll );
-        console.log( (new Date).getTime() );
         tick = (new Date).getTime() - lastPoll;
-        if ( tick > 3000 ) {
-            console.log(tick );
+        if ( tick > 3000  &&  StratuxPoll == true) {
             // 3 seconds since our last successful poll.
             Pi2D2.speed( 'inop' ); 
             Pi2D2.compass( 'inop' );
@@ -15,47 +22,48 @@ lastPoll = (new Date).getTime();
             Pi2D2.roll( 'inop' );
             Pi2D2.altitude( 'inop' );
             }
-
         checkINOP();
     }, 1000);
 })();
-/*
+
+
 (function poll(){
     setTimeout(function(){
-        $.ajax({ url: "/getSituation", success: function(data){
-            lastPoll = (new Date).getTime();
-            //Update values
-            speed = Math.round( data.GroundSpeed);
-            if ( Pi2D2.speed() != speed){
-                Pi2D2.speed( speed );
-            }
-            heading = Math.round( data.Gyro_heading );
-            if ( Pi2D2.compass() != heading ) {
-                Pi2D2.compass( heading );
-            }
-    
-            pitch = Math.round( data.Pitch );
-            if ( Pi2D2.pitch != pitch) {
-                Pi2D2.pitch( pitch );
-            }
-    
-            roll = Math.round( data.Roll );
-            if ( Pi2D2.roll() != roll ){
-                Pi2D2.roll( roll );
-            }
-    
-            altitude = Math.round( data.altitude );
-            if ( Pi2D2.altitude() != altitude ) {
-                Pi2D2.altitude( data.Pressure_alt );
-            }
-    
-            //Setup the next poll recursively
-            poll();
-        }, dataType: "json"});
+        if ( StratuxPoll == true ){
+            $.ajax({ url: "/getSituation", success: function(data){
+                lastPoll = (new Date).getTime();
+                //Update values
+                
+                speed = Math.round( data.GroundSpeed);
+                if ( Pi2D2.speed() != speed){
+                    Pi2D2.speed( speed );
+                }
+                heading = Math.round( data.Gyro_heading );
+                if ( Pi2D2.compass() != heading ) {
+                    Pi2D2.compass( heading );
+                }
+        
+                pitch = Math.round( data.Pitch );
+                if ( Pi2D2.pitch != pitch) {
+                    Pi2D2.pitch( pitch );
+                }
+        
+                roll = Math.round( data.Roll );
+                if ( Pi2D2.roll() != roll ){
+                    Pi2D2.roll( roll );
+                }
+        
+                altitude = Math.round( data.altitude );
+                if ( Pi2D2.altitude() != altitude ) {
+                    Pi2D2.altitude( data.Pressure_alt );
+                } 
+            }, dataType: "json"});
+        }
+    //Setup the next poll recursively
+    poll();
     }, 100);
 })();
 
-*/
 
 function updatePi2D2() {
    Pi2D2.roll( document.getElementById("roll").value );
@@ -154,7 +162,6 @@ function setAlt() {
 
 
 function setAltBug() {
-    clearTimeout(doPoll);
     document.getElementById('AltimeterInput').style.display='inline';
 
     

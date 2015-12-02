@@ -26,7 +26,7 @@
         compassFont: { fill: '#ffffff', stroke: 'none', 'font-size': '30', 'text-anchor': 'middle' },
         gmeter: { maxrate: 4, x: 50, y: 160, size: 120 },
         vertspeed: {x: 430, y: 160, maxrate: 1 },
-        altitudeBug: {maxrange: 50 }
+        altitudeBug: { maxrange: 50 }
     },
     
     values: {
@@ -410,14 +410,11 @@
                     +(Cx+5) +',' +((Cy-Cr)+60)
                     ).attr( {fill: '#FFF'} );
 
-
-
 //INOP
         this.inop.compass = svg.group(
                                 svg.circle(Cx,Cy,Cr).attr( {'fill': 'red', 'fill-opacity': .8} ),
-                                svg.text( Cx, (Cy - Cr*.90), 'INOP').attr( s.cardinalFont )
+                                svg.text( Cx, (Cy - Cr*.95), 'INOP').attr( s.cardinalFont )
                             ).attr( {display: 'none'});
-
 
 
         return function( heading ) {
@@ -486,7 +483,7 @@
 //        alt.group = svg.rect(x, (y-25), 90, 30).attr( {fill: 'none' });
         alt.group = svg.rect(x, (y-25), 90, 30).attr( {fill: 'none' });
 
-        svg.text( x+10, (y-40), "Altitude").attr({fill: '#ffffff', stroke: 'none', 'font-size': '10' });
+        svg.text( x, (y-40), "Altitude - Feet").attr({fill: '#ffffff', stroke: 'none', 'font-size': '10' });
     
         tX = -50;
         rX = 120;   
@@ -541,7 +538,7 @@
         asi = {   dial : [],
                   centers: [],
                   window: {} };
-        svg.text( (x-30), (y-40), "GPS - Kts").attr({fill: '#ffffff', stroke: 'none', 'font-size': '10' });
+        svg.text( (x-30), (y-40), "GPS - MPH").attr({fill: '#ffffff', stroke: 'none', 'font-size': '10' });
           
         asi.group = svg.rect(x, (y-25), 55, 30).attr( {fill: 'none' });
         
