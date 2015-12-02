@@ -24,7 +24,6 @@ lastAltitudeCheck = (new Date).getTime() / 1000;
         timeSpan = ( (new Date).getTime() / 1000 ) - lastAltitudeCheck;
         altitudeSpan =  Pi2D2.altitude() - lastAltitudeValue;
         FPM = altitudeSpan / (timeSpan/60)
-
         Pi2D2.vertspeed( FPM );
         lastAltitudeValue = Pi2D2.altitude();
         lastAltitudeCheck = (new Date).getTime() / 1000;
