@@ -239,7 +239,7 @@
             size = 90;
             step = size / maxrate;
             tick = step / 1000;
-                this.VertSpeed.animate( { transform: 't0,' +( ( tick * rate ) *-1)  }, 100 );  
+                this.VertSpeed.animate( { transform: 't0,' +( ( tick * rate ) *-1)  }, 500 );  
             v.vertspeed.rate =  rate;
             return  v.vertspeed;
         }       

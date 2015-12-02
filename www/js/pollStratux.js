@@ -28,7 +28,7 @@ lastAltitudeCheck = (new Date).getTime() / 1000;
         lastAltitudeValue = Pi2D2.altitude();
         lastAltitudeCheck = (new Date).getTime() / 1000;
         computeVSI();
-    }, 1000 );    
+    }, 500 );    
 })();
 
 
