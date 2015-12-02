@@ -17,7 +17,7 @@
     
     settings: {
         screen: {x: 480, y:320},
-        compass: {x: 240, y: 600, r: 340, opacity: .3 },
+        compass: {x: 240, y: 600, r: 350, opacity: .3 },
         altitude: { x: 385, y: 55 },
         speed: { x: 80, y: 55, Vso: 55, Vsi: 45, Vfe: 100, Vno: 140, Vne: 160 },
         smallFont: { fill: '#ffffff', stroke: 'none', 'font-size': '18', 'text-anchor': 'middle' },
@@ -373,7 +373,7 @@
 
         //Build the compass
         compassRose = svg.group();
-        compassRose.circle(Cx,Cy,Cr+10).attr( {'fill-opacity': 1} ).attr({onclick: "setBug();"});
+        compassRose.circle(Cx,Cy,Cr).attr( {'fill-opacity': 1} ).attr({onclick: "setBug();"});
 /*
         headingBug = compassRose.polygon(
                                     Cx +',' +((Cy-Cr)+25) +' '
@@ -383,7 +383,7 @@
 */
          headingBug = compassRose.line(Cx, Cy, Cx, (y*.5) ).attr( { 'stroke-width': '8',stroke: '#FF00FF'} ); 
 
-        compassRose.text( Cx, (Cy - Cr*.94), 'N').attr( s.cardinalFont );
+        compassRose.text( Cx, (Cy - Cr*.91), 'N').attr( s.cardinalFont );
        
         for (var i = 0; i < 36; i++) {
             var r = ( i * 10 );
@@ -393,14 +393,15 @@
             if ( r == 90 ) { m = 'E'; font = s.cardinalFont; }
             if ( r == 180 ) { m = 'S'; font = s.cardinalFont; }
             if ( r == 270 ) { m = 'W'; font = s.cardinalFont; }
-            compassRose.text( Cx, (Cy - Cr*.94), m).attr( font ).animate({ transform: 'r' +r+','+Cx+',' +Cy}, 100);
+            compassRose.text( Cx, (Cy - Cr*.91), m).attr( font ).animate({ transform: 'r' +r+','+Cx+',' +Cy}, 100);
         }
           
         for (var i = 0; i < 360; i++) {
-            y1 = (Cy - Cr*.92);
-            y2 = (Cy - Cr*.91);
-            if ( i % 5 === 0 ) { y1 = (Cy - Cr*.93) }
-            compassRose.line( Cx, y1, Cx, y2 ).attr( { stroke: '#ffffff', 'stroke-width': '1' }).animate({ transform: 'r' +i +',' +Cx+',' +Cy }, 100);
+            y1 = (Cy - Cr*.87);
+            y2 = (Cy - Cr*.89);
+            
+            if ( i % 5 === 0 ) { y2 = (Cy - Cr*.91) }
+            compassRose.line( Cx, y2, Cx, y1 ).attr( { stroke: '#ffffff', 'stroke-width': '1' }).animate({ transform: 'r' +i +',' +Cx+',' +Cy }, 100);
         }
        
         //Compass Marker       
@@ -413,7 +414,7 @@
 //INOP
         this.inop.compass = svg.group(
                                 svg.circle(Cx,Cy,Cr).attr( {'fill': 'red', 'fill-opacity': .8} ),
-                                svg.text( Cx, (Cy - Cr*.95), 'INOP').attr( s.cardinalFont )
+                                svg.text( Cx, (Cy - Cr*.85), 'INOP').attr( s.cardinalFont )
                             ).attr( {display: 'none'});
 
 
@@ -573,8 +574,8 @@
         svg.polygon( '15,38 35,28 35, 48').attr( {fill: '#fff'} );
 //INOP
         this.inop.speed = svg.group(
-                                svg.rect(x-50, (y-35), 110, 45).attr( {fill: 'red', opacity: .8 }),
-                                svg.text(x+5, (y), "INOP").attr( s.cardinalFont )
+                                svg.rect(x-75, (y-35), 125, 40).attr( {fill: 'red', opacity: .8 }),
+                                svg.text(x-10, (y), "INOP").attr( s.cardinalFont )
                             ).attr( {display: 'none'});
 
         return function ( speed ){
