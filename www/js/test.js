@@ -109,24 +109,3 @@ function setThis( item, value ){
 
 
 
-function setAlt() {
-    document.getElementById('ALTnumber').value = '';
-    document.getElementById('Pi2D2_SVG').style.display='none';
-    document.getElementById('AltimeterInput').style.display='inline';
-}
-
-
-function setAltBug() {
-    document.getElementById('AltimeterInput').style.display='inline';
-    Pi2D2.altitudeBug ( Pi2D2.altitude() );
-    
-}
-
-
-function setBug() {
-    document.getElementById('HeadNumber').value = ((Pi2D2.compass() % 360)+360)%360;
-    document.getElementById('Pi2D2_SVG').style.display='none';
-    document.getElementById('HeadingBugInput').style.display='inline';
-}
-
-
