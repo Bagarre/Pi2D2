@@ -17,18 +17,24 @@ var lastPoll = ( new Date).getTime();
     }, 1000);
 })();
 
+
+
+
+
 var lastAltitudeValue;
-lastAltitudeCheck = (new Date).getTime() / 1000;
+lastAltitudeCheck = (new Date).getTime() / 1000; // seconds ago
 (function computeVSI() {
     setTimeout( function () {
-        timeSpan = ( (new Date).getTime() / 1000 ) - lastAltitudeCheck;
+        timeSpan = ( (new Date).getTime() / 1000 ) - lastAltitudeCheck; // seconds since last check.
+
         altitudeSpan =  Pi2D2.altitude() - lastAltitudeValue;
-        FPM = altitudeSpan / (timeSpan/60)
+
+        FPM = altitudeSpan / (timeSpan/60) // feet per minute over the last seconds 
         Pi2D2.vertspeed( FPM );
         lastAltitudeValue = Pi2D2.altitude();
         lastAltitudeCheck = (new Date).getTime() / 1000;
         computeVSI();
-    }, 500 );    
+    }, 200 );    
 })();
 
 
@@ -63,7 +69,7 @@ lastAltitudeCheck = (new Date).getTime() / 1000;
                 altitude = Math.round( data.altitude );
                 if ( Pi2D2.altitude() != altitude ) {
                     Pi2D2.altitude( data.Pressure_alt );
-                } 
+                }
             }, dataType: "json"});
         }
     //Setup the next poll recursively

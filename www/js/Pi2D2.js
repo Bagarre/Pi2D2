@@ -12,11 +12,11 @@
       // things I expect the user will want to change
         vspeeds: { Vso: 55, Vsi: 45, Vfe: 100, Vno: 140, Vne: 160 },
         gmeter: { maxload: 4},
-        vsi: { maxrate: 1000 }
+        vsi: { maxrate: 500}
     },
 
     settings: {
-    // things I expect a programming will want to change for a different sreen size
+    // things I expect a programer will want to change for a different sreen size
         screen: {x: 480, y:320},
         compass: {x: 240, y: 600, r: 350, opacity: .3 },
         altitude: { x: 385, y: 55 },
@@ -141,8 +141,8 @@
             if ( load == null ) { return v.gload }
             x = s.screen.x;
             y = s.screen.y;
-            gx = s.vertspeed.x;
-            gy = s.vertspeed.y;
+            gx = s.gmeter.x;
+            gy = s.gmeter.y;
             maxrate = s.gmeter.maxrate;
             size = s.gmeter.size;
             step = size / maxrate;
@@ -179,44 +179,30 @@
         y = s.screen.y;
         gx = s.vertspeed.x;
         gy = s.vertspeed.y;
-        maxrate = s.vertspeed.maxrate;
+        maxrate = c.vsi.maxrate;
         size = 90;
         step = size / maxrate;
-        tick = step / 10;
+        tick = step*100 ;
         svg.line( gx, gy + size , gx, gy - size ).attr( { stroke: '#ffffff', 'stroke-width': '3' });
         svg.line( gx, gy, gx+20, gy).attr( { stroke: '#ffffff', 'stroke-width': '2' });
         svg.text( gx+25, gy+6, '0').attr( { fill: '#ffffff', 'text-anchor': 'left' } );
         xdec = gx + 20;
         ydec = gy;
-        for (i=0; i < s.vertspeed.maxrate; i++) {
+        for (i=0; i < maxrate/100; i++) {
             svg.line( gx, ydec, xdec, ydec).attr( { stroke: '#ffffff', 'stroke-width': '3 ' });
-            svg.text( xdec + 5, ydec+6, i).attr( { fill: '#ffffff', 'text-anchor': 'center' } );
-            for ( j=0; j<10; j++) {
-                if ( j == 5){
-                    svg.line( gx, ydec, xdec, ydec).attr( { stroke: '#ffffff', 'stroke-width': '3' });
-                }
-            svg.line( gx, ydec, xdec-10, ydec).attr( { stroke: '#ffffff', 'stroke-width': '1' });
             ydec = ydec-tick;
-            }
+
         }
         svg.line( gx, ydec, xdec, ydec).attr( { stroke: '#ffffff', 'stroke-width': '3' });
-        svg.text( xdec + 5, ydec+6, i +"k").attr( { fill: '#ffffff', 'text-anchor': 'center' } );
-
+        svg.text( xdec + 5, ydec+6, i).attr( { fill: '#ffffff', 'text-anchor': 'center' } );
         xdec = gx + 20;
         ydec = gy;
-        for (i=0; i < s.vertspeed.maxrate; i++)   {
+        for (i=0; i < maxrate/100; i++)   {
             svg.line( gx, ydec, xdec, ydec).attr( { stroke: '#ffffff', 'stroke-width': '3' });
-            svg.text( xdec + 5, ydec+6, i).attr( { fill: '#ffffff', 'text-anchor': 'center' } );
-            for ( j=0; j<10; j++) {
-               if ( j == 5){
-                    svg.line( gx, ydec, xdec, ydec).attr( { stroke: '#ffffff', 'stroke-width': '3' });
-                }
-            svg.line( gx, ydec, xdec-10, ydec).attr( { stroke: '#ffffff', 'stroke-width': '1' });
             ydec = ydec+tick;
-            } 
         }
         svg.line( gx, ydec, xdec, ydec).attr( { stroke: '#ffffff', 'stroke-width': '2' });
-        svg.text( xdec + 5, ydec+6, i+"k").attr( { fill: '#ffffff', 'text-anchor': 'center' } );
+        svg.text( xdec + 5, ydec+6, i).attr( { fill: '#ffffff', 'text-anchor': 'center' } );
         this.VertSpeed =  svg.polygon( gx +',' +gy +' ' +(gx-30) +',' +(gy-10) +' ' +(gx-30) +',' +(gy+10) ).attr( {fill: '#fff'} );
         
         //INOP
@@ -235,7 +221,7 @@
             y = s.screen.y;
             gx = s.vertspeed.x;
             gy = s.vertspeed.y;
-            maxrate = s.vertspeed.maxrate;
+            maxrate = c.vsi.maxrate/1000;
             size = 90;
             step = size / maxrate;
             tick = step / 1000;
