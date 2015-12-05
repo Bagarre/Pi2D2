@@ -519,7 +519,8 @@ var Pi2D2 =  {
       y = s.screen.y;
       s.altitudeBug.step = 90 / s.altitudeBug.maxrange;;
       // 1 foot == 1 step
-      altitudeBug = svg.circle( (x*.86), (y/2), 10).attr( {fill: '#FF00FF'} ); 
+//      altitudeBug = svg.circle( (x*.86), (y/2), 15).attr( {fill: '#FF00FF'} ); 
+      altitudeBug = svg.circle( (x*.86), (y/2), 15).attr( {fill: '#ff00ff'} ); 
 
       return function ( altBug ) {
          if ( altBug == null ) { return v.altitudeBug; }

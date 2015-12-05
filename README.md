@@ -8,6 +8,15 @@ Its currently buggy as hell and I'm beating the poor Stratx 10 times a second. I
 
 Screen Resolution is 480x320 and intended for the 3.5" PiTFT hats. I built it in a way to allow larger screen resolutions and each widget can be moved around independently. The idea was, if it was a larger screen, re-organize the stuff to make sense vs make everythig bigger.
 
+### Motivation
+
+Mainly because I thought it'd be fun to work with but also as an exercise in what a backup EFIS should really be.
+Most people make these things to look like mini fighter jet EFISs with Speed tapes and all kind of stuff.
+I wanted a platform to explore what would be really needed if your primary gave out.  Thus VSI only being 500 FPM and the more obvious heading and altitude bugs.
+The GMeter is there as an exercise in math but of little value in a survival situation.
+The Alarms might be valuable to help you focus on level flight.
+There is no slip indicator - they never fail - it's a ball in a tube.
+
 ### Installation 
 I was able to get it working on a Stratux image using a twisted variation of 
 http://blog.qruizelabs.com/2014/04/29/raspberrypi-kiosk-matchbox-uzbl/
@@ -119,7 +128,8 @@ The next time you call the function with a value, it will unINOP.
 ```
 
 
-
+### Tests
+Yeah, they'd be nice.
 
 ### Tech
 
