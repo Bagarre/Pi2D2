@@ -10,9 +10,18 @@
    
     configs: {
       // things I expect the user will want to change
-        vspeeds: { Vso: 55, Vsi: 45, Vfe: 100, Vno: 140, Vne: 160 },
-        gmeter: { maxload: 4},
-        vsi: { maxrate: 500}
+         vspeeds: { Vso: 55, Vsi: 45, Vfe: 100, Vno: 140, Vne: 160 },
+         gmeter: { maxload: 4},
+         vsi: { maxrate: 500},
+         alarms: {
+            pitch: { max: 10, min: -10 },
+            roll: { max: 30, min: -30 },  
+            speed: { max: 140, min: 60 },
+            gload: { max: 3, min: -1 },
+            vsi: { max: 400, min: -400 },
+            compass: 15,
+            altitude: 100
+         }
     },
 
     settings: {
@@ -54,6 +63,17 @@
         atittude: {}    
     },
     
+    alarm: {
+        gmeter: {},
+        vertspeed: {},
+        compass: {},
+        speed: {},
+        pitch: {},
+        roll: {},
+        atittude: {}    
+    },
+
+
     init: function() {
         s = this.settings;
         v = this.values;
@@ -68,7 +88,43 @@
         this.altitude = this.altitude();
         this.altimeter = this.altimeter();
         this.gmeter = this.gmeter();
-        this.vertspeed = this.vertspeed();
+        this.vertspeed = this.vertspeed();    
+      
+      this.alarm.pitch = svg.group(
+            svg.rect((x/2)-75, 50, 150, 50).attr( {fill: 'red', opacity: .9 }),
+            svg.text((x/2), 90, "PITCH").attr( s.cardinalFont )
+            ).attr( { display: 'none'} );
+
+      this.alarm.roll = svg.group(
+            svg.rect((x/2)-75, 50, 150, 50).attr( {fill: 'red', opacity: .9 }),
+            svg.text((x/2), 90, "ROLL").attr( s.cardinalFont )
+            ).attr( { display: 'none'} );
+
+      this.alarm.vertspeed = svg.group(
+            svg.rect((x/2)-75, 50, 150, 50).attr( {fill: 'red', opacity: .9 }),
+            svg.text((x/2), 90, "VSI").attr( s.cardinalFont )
+            ).attr( { display: 'none'} );
+
+      this.alarm.compass = svg.group(
+            svg.rect((x/2)-100, 50, 200, 50).attr( {fill: 'red', opacity: .9 }),
+            svg.text((x/2), 90, "HEADING").attr( s.cardinalFont )
+            ).attr( { display: 'none'} );
+    
+      this.alarm.gmeter = svg.group(
+            svg.rect((x/2)-100, 50, 200, 50).attr( {fill: 'red', opacity: .9 }),
+            svg.text((x/2), 90, "G LOAD").attr( s.cardinalFont )
+            ).attr( { display: 'none'} );
+    
+      this.alarm.speed = svg.group(
+            svg.rect((x/2)-80, 50, 160, 50).attr( {fill: 'red', opacity: .9 }),
+            svg.text((x/2), 90, "SPEED").attr( s.cardinalFont )
+            ).attr( { display: 'none'} );
+
+      this.alarm.altitude = svg.group(
+            svg.rect((x/2)-110, 50, 220, 50).attr( {fill: 'red', opacity: .9 }),
+            svg.text((x/2), 90, "ALTITUDE").attr( s.cardinalFont )
+            ).attr( { display: 'none'} );
+      
     },
     
     gmeter: function(){
@@ -160,6 +216,10 @@
             if ( load == 'inop') { this.inop.gmeter.attr({display: 'inline'}); }
             else {this.inop.gmeter.attr({display: 'none'}); }
 
+            if ( load > c.alarms.gload.max || load < c.alarms.gload.min  ) { this.alarm.gmeter.attr({display: 'inline'}); }
+            else {this.alarm.gmeter.attr({display: 'none'}); }
+
+
             this.GLoad.animate( { transform: 't0,' +( ( step * load ) *-1)  }, 100 );              
                 if ( v.gload.maxpos < load ){
                     v.gload.maxpos = load;
@@ -216,6 +276,8 @@
             if ( rate == null ) { return v.vertspeed }
             if ( rate == 'inop') { this.inop.vertspeed.attr({display: 'inline'}); }
             else { this.inop.vertspeed.attr({display: 'none'}); }
+            if ( rate > c.alarms.vsi.max || rate < c.alarms.vsi.min  ) { this.alarm.vertspeed.attr({display: 'inline'}); }
+            else { this.alarm.vertspeed.attr({display: 'none'}); }
 
             x = s.screen.x;
             y = s.screen.y;
@@ -247,13 +309,22 @@
                         svg.text( (x/2), (y/2), 'INOP').attr( s.cardinalFont )
                     ).attr( {display: 'none'});
 
+
+
         return function( pitch ) {
             if ( pitch == null ) { return v.pitch; }
             if ( pitch == 'inop' ) { this.inop.pitch.attr( {display: 'inline'}); }
-            else { this.inop.pitch.attr( {display: 'none'}); }
-
-            this.theworld.animate( { transform: 't0,'+(pitch*4) }, 100  );           
-            return ( v.pitch = pitch);
+            else {
+               if ( pitch > c.alarms.pitch.max || pitch < c.alarms.pitch.min ) {
+                  this.alarm.pitch.attr( {display: 'inline'});
+                  }
+               else {
+                  this.alarm.pitch.attr( {display: 'none'});
+                  }
+               this.inop.pitch.attr( {display: 'none'});
+               this.theworld.animate( { transform: 't0,'+(pitch*4) }, 100  );           
+            }
+         return ( v.pitch = pitch);
         };
     },
 
@@ -307,7 +378,7 @@
         
         ////////////////////////////////////////////////////////////////////////////////
         ////////// Bank Angle Hashes (short ones)
-           var a = ["130", "140", "160", "170", "190", "200", "220", "230"];
+           var a = ["90", "100", "110", "120", "130", "140", "160", "170", "190", "200", "220", "230", "240", "250", "260", "270" ];
            a.forEach(function(entry) {
               anglexinradians = (entry  * Math.PI / 180);
               startx = Math.sin(anglexinradians) * 130 + 240;
@@ -336,12 +407,15 @@
                                 svg.circle((x/2), (y/2), 160).attr( {'fill': 'red', 'fill-opacity': .8} ),
                                 svg.text( (x/2), (y/2), 'INOP').attr( s.cardinalFont )
                             ).attr( {display: 'none'});
+        
     
         
         return function (roll){
             if ( roll == null ) { return v.roll; }
             if ( roll == 'inop' ) { this.inop.roll.attr( {display: 'inline'}); }
             else { this.inop.roll.attr( {display: 'none'}); }
+            if ( roll > c.alarms.roll.max || roll < c.alarms.roll.min  ) { this.alarm.roll.attr({display: 'inline'}); }
+            else { this.alarm.roll.attr({display: 'none'}); }
 
             this.thewholeworld.animate( { transform: 'r' +roll +',240,160' }, 100 );
             return v.roll = roll;
@@ -410,6 +484,9 @@
             if ( heading == null ) { return v.heading }
             if ( heading == 'inop' ) { this.inop.compass.attr( {display: 'inline'}); }
             else {  this.inop.compass.attr( {display: 'none'}); }
+            if ( ( heading - v.headingBug ) > c.alarms.compass || ( v.headingBug - heading) > c.alarms.compass  ) { this.alarm.compass.attr({display: 'inline'}); }
+            else { this.alarm.compass.attr({display: 'none'}); }
+            
             compassRose.animate( { transform: 'r' +heading*-1 +',' +Cx +',' +Cy }, 100 );  
             return v.heading = heading;
         }
@@ -451,8 +528,9 @@
 
       return function ( altBug ) {
          if ( altBug == null ) { return v.altitudeBug; }
-
          altitudeBug.animate( { transform: 't0,' +( (s.altitudeBug.step * ( v.altitude - altBug ) ) )  }, 100 );  
+            console.log('boo');
+
          return  v.altitudeBug = altBug;
       };
       
@@ -472,7 +550,6 @@
           
 //        alt.group = svg.rect(x, (y-25), 90, 30).attr( {fill: 'none' });
         alt.group = svg.rect(x, (y-25), 90, 30).attr( {fill: 'none' });
-
         svg.text( x, (y-40), "Altitude - Feet").attr({fill: '#ffffff', stroke: 'none', 'font-size': '10' });
     
         tX = -50;
@@ -509,7 +586,16 @@
             alt.dial[2].animate( { transform: 'r' +Math.floor( correctedAltitude / 100 )*36 +',' +alt.centers[2] +',' +y }, 200 );  
             alt.dial[3].animate( { transform: 'r' +Math.floor( correctedAltitude / 10 )*36 +',' +alt.centers[3] +',' +y }, 200 );  
             alt.dial[4].animate( { transform: 'r' +Math.floor( correctedAltitude / 1 )*36 +',' +alt.centers[4] +',' +y }, 2 );  
+
+   
+            if ( ( v.altitudeBug  - altitude ) > c.alarms.altitude || ( altitude - v.altitudeBug ) > c.alarms.altitude  ) {
+               this.alarm.altitude.attr({display: 'inline'});
+               }
+            else { this.alarm.altitude.attr({display: 'none'}); }
+
             altitudeBug.animate( { transform: 't0,' +( (s.altitudeBug.step * ( altitude - v.altitudeBug ) ) )  }, 100 );  
+
+
             return v.altitude = altitude;
         };
     },
