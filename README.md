@@ -38,7 +38,6 @@ Pitch, Roll, Compass, Heading Bug and Altimeter
 
 ### What is yet to work
 * G Meter: `Pi2D2.gmeter(int);` sets the bar. Max and Min are also marked, Click the hash to reset.
-* Vertical Speed: `Pi2D2.vertspeed(int);` sets the bar.
 
 
 ### Version
