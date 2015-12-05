@@ -49,16 +49,49 @@ Pi2D2.settings: {
         screen: {x: 480, y:320},
         compass: {x: 240, y: 600, r: 340, opacity: .3 },
         altitude: { x: 385, y: 55 },
-        speed: { x: 80, y: 55, Vso: 55, Vsi: 45, Vfe: 100, Vno: 140, Vne: 160 },
+        speed: { x: 80, y: 55 },
         smallFont: { fill: '#ffffff', stroke: 'none', 'font-size': '18', 'text-anchor': 'middle' },
         largeFont: { fill: '#ffffff', stroke: 'none', 'font-size': '45', 'text-anchor': 'middle' },
         cardinalFont: { fill: '#ffffff', stroke: 'none', 'font-size': '40', 'text-anchor': 'middle' },
         compassFont: { fill: '#ffffff', stroke: 'none', 'font-size': '30', 'text-anchor': 'middle' },
         gmeter: { maxrate: 4, x: 50, y: 160, size: 120 },
-        vertspeed: {x: 430, y: 160, maxrate: 1 }
+        vertspeed: {x: 430, y: 160 }
     },
 
 ```
+
+### Configs
+These are things that users will want to change based on their aircraft.
+
+
+### Alerts
+These are limits for when an alert should be displayed on the screen.
+IE, if bank angle exceeds 15 degrees an alert is displayed until corrected.
+
+
+I hope to have these exposed in the UI at some point.
+```sh
+   configs: {
+      vspeeds: { Vso: 55, Vsi: 45, Vfe: 100, Vno: 140, Vne: 160 },
+      gmeter: { maxload: 4},
+      vsi: { maxrate: 500},
+      alarms: {
+         pitch: { max: 10, min: -10 },
+         roll: { max: 15, min: -15 },  
+         speed: { max: 140, min: 60 },
+         gload: { max: 2, min: -1 },
+         vsi: { max: 400, min: -400 },
+         compass: 15,
+         altitude: 50
+      }
+   },
+
+```
+
+
+
+
+
  ... or just leave everything defaults.
  And then call init
 ```sh
@@ -84,6 +117,8 @@ The next time you call the function with a value, it will unINOP.
    Pi2D2.gmeter( -1 );
 
 ```
+
+
 
 
 ### Tech
