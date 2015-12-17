@@ -50,7 +50,9 @@ Simply create an svg tag
 ```sh
 <svg class="my-svg" id="svg" version="1.1" xmlns="http://www.w3.org/2000/svg" height="320px" width="480px"></svg>
 ```
-Add any configs you want:
+### Settings
+These probably wont have to ever change unless you want a different screen size.
+Each element's x,y are where it shows up on the screen.
 
 ```sh
 Pi2D2.settings: {
@@ -68,14 +70,11 @@ Pi2D2.settings: {
 
 ```
 
-### Configs
+### Configs and Alarms
 These are things that users will want to change based on their aircraft.
 
-
-### Alerts
-These are limits for when an alert should be displayed on the screen.
+Alarms are limits for when an alert should be displayed on the screen.
 IE, if bank angle exceeds 15 degrees an alert is displayed until corrected.
-
 
 I hope to have these exposed in the UI at some point.
 ```sh
@@ -96,24 +95,22 @@ I hope to have these exposed in the UI at some point.
 
 ```
 
-
-
-
-
  ... or just leave everything defaults.
  And then call init
 ```sh
 Pi2D2.init();
 ```
 
-### Updating
+### Updating the UI
+If you're using a Stratux, just set `pollStratux = true` after running `Pi2D2.init()`
+
+If you want to roll your own from a different source.
 Calling a function with no value  returns the current set value.
 Calling with a value will set it to that value (and animate the screen)
 Calling it with 'inop' will set that instrument to INOP and red it out.
 The next time you call the function with a value, it will unINOP.
 
 ```sh
-
    Pi2D2.roll( 30 ); -- sets roll to 30 degrees right.
    Pi2D2.pitch( 10 ); -- sets pitch 10 degrees up.
    Pi2D2.altitude( 'inop' ); - blanks out the Altitude indicator with INOP;   
@@ -123,9 +120,11 @@ The next time you call the function with a value, it will unINOP.
    Pi2D2.headingBug(  12);
    Pi2D2.vertspeed( 300 ); -- feet per minute
    Pi2D2.gmeter( -1 );
-
 ```
 
+### INOP
+When using `pollStratux=true;` we will set a given instrument `INOP` if we don't revieve an update for 3 seconds.
+At next successfull poll, we turn off the INOP indication.
 
 ### Tests
 Yeah, they'd be nice.
@@ -142,7 +141,7 @@ Pi2D2 uses a number of open source projects to work properly:
 ### Todos
 
  - Write Tests
- - Rethink Github Save
+ - Install documentation
  - Add Code Comments
  - Add Night Mode
  - More things than you can think
