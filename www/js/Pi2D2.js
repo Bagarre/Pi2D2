@@ -12,12 +12,12 @@ var Pi2D2 =  {
       // things I expect the user will want to change
       vspeeds: { Vso: 55, Vsi: 45, Vfe: 100, Vno: 140, Vne: 160 },
       gmeter: { maxload: 4},
-      vsi: { maxrate: 500},
+      vsi: { maxrate: 1000},
       alarms: {
          pitch: { max: 10, min: -10 },
          roll: { max: 15, min: -15 },  
          speed: { max: 140, min: 60 },
-         gload: { max: 2, min: -1 },
+         gload: { max: 4, min: -2 },
          vsi: { max: 400, min: -400 },
          compass: 15,
          altitude: 50
@@ -27,15 +27,15 @@ var Pi2D2 =  {
    settings: {
     // things I expect a programer will want to change for a different sreen size
       screen: {x: 480, y:320},
-      compass: {x: 240, y: 600, r: 350, opacity: .3 },
+      compass: {x: 240, y: 855, r: 590, opacity: .3 },
       altitude: { x: 385, y: 55 },
       speed: { x: 80, y: 55},
       smallFont: { fill: '#ffffff', stroke: 'none', 'font-size': '18', 'text-anchor': 'middle' },
       largeFont: { fill: '#ffffff', stroke: 'none', 'font-size': '45', 'text-anchor': 'middle' },
       cardinalFont: { fill: '#ffffff', stroke: 'none', 'font-size': '40', 'text-anchor': 'middle' },
       compassFont: { fill: '#ffffff', stroke: 'none', 'font-size': '30', 'text-anchor': 'middle' },
-      gmeter: { maxrate: 4, x: 50, y: 160, size: 120 },
-      vertspeed: {x: 430, y: 160, maxrate: 1 },
+      gmeter: { maxrate: 4, x: 50, y: 160, degrees: 120 },
+      vertspeed: {x: 430, y: 160 },
       altitudeBug: { maxrange: 50 }
    },
     
@@ -44,16 +44,20 @@ var Pi2D2 =  {
       pitch: 0,
       roll: 0,
       speed: 0,
+      cdi: 0,
+      glideslope: 0,
       altitude: 0,
       altimeter: 29.92,
       heading: 0,
       headingBug: 0,
       altitudeBug: 0,
-      gload: {load: 0, maxpos: 1, maxneg: 1},
+      gload: {load: 1, maxpos: 1, maxneg: 1},
       vertspeed: {rate: 0}
    },
     
    inop: {
+//      cdi: {}, //todo
+ //     glideslope: {}, //todo
       gmeter: {},
       vertspeed: {},
       compass: {},
@@ -78,18 +82,20 @@ var Pi2D2 =  {
       s = this.settings;
       v = this.values;
       c = this.configs;
-      svg = Snap("#Pi2D2_SVG");
+      svg = Snap('#Pi2D2_SVG');
       this.pitch = this.pitch();
       this.roll = this.roll();
       this.compass = this.compass();
       this.headingBug = this.headingBug();
       this.speed = this.speed();
-      this.altitudeBug = this.altitudeBug();
+//      this.altitudeBug = this.altitudeBug();
       this.altitude = this.altitude();
       this.altimeter = this.altimeter();
       this.gmeter = this.gmeter();
       this.vertspeed = this.vertspeed();    
-      
+      this.cdi = this.cdi();
+      this.glideslope = this.glideslope();
+    /*  
       this.alarm.pitch = svg.group(
             svg.rect((x/2)-75, 50, 150, 50).attr( {fill: 'red', opacity: .9 }),
             svg.text((x/2), 90, "PITCH").attr( s.cardinalFont )
@@ -123,81 +129,47 @@ var Pi2D2 =  {
       this.alarm.altitude = svg.group(
             svg.rect((x/2)-110, 50, 220, 50).attr( {fill: 'red', opacity: .9 }),
             svg.text((x/2), 90, "ALTITUDE").attr( s.cardinalFont )
-            ).attr( { display: 'none'} );      
-    },
-    
+            ).attr( { display: 'none'} );    
+   */
+   return 1;
+   
+   },
+
+   
    gmeter: function(){
       x = s.screen.x;
       y = s.screen.y;
       gx = s.gmeter.x;
       gy = s.gmeter.y;
-      maxrate = s.gmeter.maxrate;
-      size = s.gmeter.size;
-      step = size / maxrate;
-      tick = step / 2;
-      gy = gy+step;
-      
-      svg.line( gx, gy + size , gx, gy - size ).attr( { stroke: '#ffffff', 'stroke-width': '3' });
-      
-      xdec = gx - 10;
-      ydec = gy;
-      svg.text( xdec - 11, ydec + 6, '0').attr( { fill: '#ffffff', 'text-anchor': 'center' } );
-      for (i=0; i < s.gmeter.maxrate; i++)  {
-         svg.line( gx, ydec, xdec, ydec).attr( { stroke: '#ffffff', 'stroke-width': '2' });
-            svg.text( xdec - 11 , ydec+6, i).attr( { fill: '#ffffff', 'text-anchor': 'center' } );
-            for ( j=0; j<2; j++) {
-               if ( j == 5){
-                  svg.line( gx, ydec, xdec-10, ydec).attr( { stroke: '#ffffff', 'stroke-width': '3' });
-               }
-               svg.line( gx, ydec, xdec+5, ydec).attr( { stroke: '#ffffff', 'stroke-width': '1' });
-               ydec = ydec-tick;
-            }
-         }
-      svg.line( gx, ydec, xdec, ydec).attr( { stroke: '#ffffff', 'stroke-width': '2' });
-      svg.text( xdec - 11, ydec+6, i).attr( { fill: '#ffffff', 'text-anchor': 'center' } );
 
-      xdec = gx - 10;
-      ydec = gy+tick*2;
-      for (i=1; i < s.gmeter.maxrate; i++)  {
-         svg.line( gx, ydec, xdec, ydec).attr( { stroke: '#ffffff', 'stroke-width': '2' });
-         svg.text( xdec - 18, ydec+6, "-"+i).attr( { fill: '#ffffff', 'text-anchor': 'center' } );
-         for ( j=0; j<2; j++) {
-            if ( j == 5){
-               svg.line( gx, ydec, xdec+10, ydec).attr( { stroke: '#ffffff', 'stroke-width': '3' });
-            }
-            svg.line( gx, ydec, xdec+5, ydec).attr( { stroke: '#ffffff', 'stroke-width': '1' });
-            ydec = ydec+tick;
-            } 
-         }
-      svg.line( gx, ydec, xdec, ydec).attr( { stroke: '#ffffff', 'stroke-width': '2' });
-      svg.text( xdec - 18, ydec+6, "-" +i).attr( { fill: '#ffffff', 'text-anchor': 'center' } );
-            
+svg.text(gx, gy+7, '0').attr(s.smallFont);
 
-      this.GloadMaxPos =  svg.polygon( gx +',' +gy +' ' +(gx+20) +',' +(gy-8) +' ' +(gx+20) +',' +(gy) ).attr( {fill: '#fff'} );
-      this.GloadMaxPos.animate( { transform: 't0,' +( ( step * 1 ) *-1)  }, 100 );
+for ( ii=0; ii<5; ii++ ){
+  svg.line( gx-20, y/2, gx-10, y/2 ).attr( { stroke: '#ffffff', 'stroke-width': 2 }).animate({ transform: 'r' +(ii*5) +',' +(-250)+',' +(y/2) }, 100);
+  svg.line( gx-20, y/2, gx-10, y/2 ).attr( { stroke: '#ffffff', 'stroke-width': 2 }).animate({ transform: 'r-' +(ii*5) +',' +(-250)+',' +(y/2) }, 100);
+  svg.text(gx, gy+7, ii).attr(s.smallFont).animate({transform: 'r' +(ii*5)+',' +(-250)+',' +(y/2) }, 100);
+  svg.text(gx, gy+7, ii).attr(s.smallFont).animate({transform: 'r-' +(ii*5)+',' +(-250)+',' +(y/2) }, 100);      
+}
+        
+Gload = svg.line( gx-10, y/2, -250, y/2 ).attr( {stroke:'#ffffff', 'stroke-width': '5'});
+GloadMaxPos = svg.line( gx-10, y/2, -250, y/2 ).attr( {stroke:'#ffffff', 'stroke-width': '2'});
+GloadMaxNeg = svg.line( gx-10, y/2, -250, y/2 ).attr( {stroke:'#ffffff', 'stroke-width': '2'});
 
-      this.GLoadMaxNeg =  svg.polygon( gx +',' +gy +' ' +(gx+20) +',' +(gy) +' ' +(gx+20) +',' +(gy+8) ).attr( {fill: '#fff'} );
-      this.GLoadMaxNeg.animate( { transform: 't0,' +( ( step * 1 ) *-1)  }, 100 );
-
-      this.GLoad =  svg.group ( svg.polygon( gx +',' +gy +' ' +(gx+30) +',' +(gy-12) +' ' +(gx+30) +',' +(gy+12) ).attr( {fill: '#fff',  onclick: "Pi2D2.gmeter('reset');"}),        
-      svg.text( gx+15,gy+5, "G").attr( { fill: '#000000', 'text-anchor': 'center' } )        );
-      this.GLoad.animate( { transform: 't0,' +( ( step * 1 ) *-1)  }, 100 );
-
+        
 //INOP
       this.inop.gmeter = svg.group(
-         svg.rect(gx-25, (gy-size), gx, (size*2)).attr( {fill: 'red', opacity: .8 }),
+        // TODO Need these to be Arcs now
+        // svg.rect(gx-25, (gy-size), gx, (size*2)).attr( {fill: 'red', opacity: .8 }),
          svg.text(gx, gy, "INOP").attr( s.cardinalFont )
       ).attr( {display: 'none'});
 
       return function( load ) {
-         if ( load == null ) { return v.gload }
+         if ( load == null ) { return v.gload; }
          x = s.screen.x;
          y = s.screen.y;
          gx = s.gmeter.x;
          gy = s.gmeter.y;
-         maxrate = s.gmeter.maxrate;
-         size = s.gmeter.size;
-         step = size / maxrate;
+         step = s.gmeter.degrees / s.gmeter.maxrate;
             
          if (load == 'reset' ) {
             v.gload.load =  1;
@@ -225,50 +197,140 @@ var Pi2D2 =  {
                v.gload.maxneg = load;
                this.GLoadMaxNeg.animate( { transform: 't0,' +( ( step * load ) *-1 )  }, 100 );  
             }                    
-            v.gload.load =  load;
-            return  v.gload;
-         }   
+            return (v.gload.load =  load);
+         };
    },
+   
+   
+   cdi: function() {
+      x = s.screen.x;
+      y = s.screen.y;
+   
+//CDI HERE FOR NOW
+ svg.rect( (x/2)-110, (y/2)+75, 220, 20).attr( {fill: 'black', opacity: .4 });
+
+CDINeedle = svg.group(
+svg.line(240,230, 240, 260).attr({ 'stroke': '#00ff00', 'stroke-width': 8 }), 
+   svg.circle( 240, 245, 5).attr( { fill: '#000'})
+);
+
+//CDINeedle.animate({transform: 't45,0'},100);
+
+ svg.circle( (x/2), 245, 10).attr( {'stroke':'#ffffff', 'stroke-width':2, fill: 'none'});
+
+ svg.circle( (x/2)+25,  245, 5).attr( {'stroke':'#ffffff', 'stroke-width':2, fill: 'none'});
+ svg.circle( (x/2)+50,  245, 5).attr( {'stroke':'#ffffff', 'stroke-width':2, fill: 'none'});
+ svg.circle( (x/2)+75,  245, 5).attr( {'stroke':'#ffffff', 'stroke-width':2, fill: 'none'});
+ svg.circle( (x/2)+100, 245, 5).attr( {'stroke':'#ffffff', 'stroke-width':2, fill: 'none'});
+
+ svg.circle( (x/2)-25,  245, 5).attr( {'stroke':'#ffffff', 'stroke-width':2, fill: 'none'});
+ svg.circle( (x/2)-50,  245, 5).attr( {'stroke':'#ffffff', 'stroke-width':2, fill: 'none'});
+ svg.circle( (x/2)-75,  245, 5).attr( {'stroke':'#ffffff', 'stroke-width':2, fill: 'none'});
+ svg.circle( (x/2)-100, 245, 5).attr( {'stroke':'#ffffff', 'stroke-width':2, fill: 'none'});
+   
+
+          //TODO MOVE THIS TO CDI
+svg.rect( 65, 198, 60, 60).attr({ opacity: .4, fill: 'black' } );
+svg.text( 95, 215, '117.95').attr( {fill: '#ffffff', stroke: 'none', 'font-size': '15', 'text-anchor': 'middle' });
+svg.text( 95, 235, '039').attr( {fill: '#ffffff', stroke: 'none', 'font-size': '20', 'text-anchor': 'middle' });         
+svg.text( 95, 250, 'TO').attr( {fill: '#ffffff', stroke: 'none', 'font-size': '15', 'text-anchor': 'middle' });        
+     
+svg.rect( 65, 124, 60, 24).attr({ opacity: .4, fill: 'black' } );
+svg.text( 95, 143, 'GPS').attr( {fill: '#ffffff', stroke: 'none', 'font-size': '20', 'text-anchor': 'middle' });       
+
+return 1;
+
+
+     
+   },   
+   
+   
+   glideslope: function() {
+      x = s.screen.x;
+      y = s.screen.y;
+   
+//ILS HERE FOR NOW
+svg.rect( (x-80), (y/2)-95, 20, 190).attr( {fill: 'black', opacity: .4 });
+
+ svg.circle( (x-70), (y/2), 10).attr( {'stroke':'#ffffff', 'stroke-width':2, fill: 'none'});
+
+ILSNeedle = svg.group(
+   svg.line(395, (y/2), 425, (y/2)).attr({ 'stroke': '#00ff00', 'stroke-width': 8 }), 
+   svg.circle( (x-70), (y/2), 5).attr( { fill: '#000'})
+
+);
+
+//ILSNeedle.animate({transform: 't0,40'},100);
+
+
+ svg.circle( (x-70), (y/2)+22, 5).attr( {'stroke':'#ffffff', 'stroke-width':2, fill: 'none'});
+ svg.circle( (x-70), (y/2)+44, 5).attr( {'stroke':'#ffffff', 'stroke-width':2, fill: 'none'});
+ svg.circle( (x-70), (y/2)+66, 5).attr( {'stroke':'#ffffff', 'stroke-width':2, fill: 'none'});
+ svg.circle( (x-70), (y/2)+88, 5).attr( {'stroke':'#ffffff', 'stroke-width':2, fill: 'none'});
+ 
+ svg.circle( (x-70), (y/2)-22, 5).attr( {'stroke':'#ffffff', 'stroke-width':2, fill: 'none'});
+ svg.circle( (x-70), (y/2)-44, 5).attr( {'stroke':'#ffffff', 'stroke-width':2, fill: 'none'});
+ svg.circle( (x-70), (y/2)-66, 5).attr( {'stroke':'#ffffff', 'stroke-width':2, fill: 'none'});
+ svg.circle( (x-70), (y/2)-88, 5).attr( {'stroke':'#ffffff', 'stroke-width':2, fill: 'none'});
+
+svg.rect( 335,184, 60, 24).attr({fill: 'black', opacity: .5 } );
+svg.text( 365,203, 'VLOC').attr( {fill: '#ffffff', stroke: 'none', 'font-size': '20', 'text-anchor': 'middle' });       
+
+svg.rect( 320, 124, 75, 24).attr({fill: 'black', opacity: .5 } );
+svg.text( 358, 143, '15,000').attr( {fill: '#ffffff', stroke: 'none', 'font-size': '20', 'text-anchor': 'middle' });       
+
+
+
+//TODO
+//1. widget to cgange freq on VOR
+//2. Select GPS CDI Guidance. when doig this, GS will become altitude bug
+
+return 1;
+   },
+   
+   
     
    vertspeed: function(){
       x = s.screen.x;
       y = s.screen.y;
+      maxrate = c.vsi.maxrate; // if 1000 fpm
+      steps = (maxrate/100)+1; // ten steps
+      degrees = 20/steps; // 2 degrees per step
       gx = s.vertspeed.x;
       gy = s.vertspeed.y;
-      maxrate = c.vsi.maxrate;
-      size = 90;
-      step = size / maxrate;
-      tick = step*100 ;
-      svg.line( gx, gy + size , gx, gy - size ).attr( { stroke: '#ffffff', 'stroke-width': '3' });
-      svg.line( gx, gy, gx+20, gy).attr( { stroke: '#ffffff', 'stroke-width': '2' });
-      svg.text( gx+25, gy+6, '0').attr( { fill: '#ffffff', 'text-anchor': 'left' } );
-      xdec = gx + 20;
-      ydec = gy;
-      for (i=0; i < maxrate/100; i++) {
-         svg.line( gx, ydec, xdec, ydec).attr( { stroke: '#ffffff', 'stroke-width': '3 ' });
-         ydec = ydec-tick;
-      }
-      svg.line( gx, ydec, xdec, ydec).attr( { stroke: '#ffffff', 'stroke-width': '3' });
-      svg.text( xdec + 5, ydec+6, i).attr( { fill: '#ffffff', 'text-anchor': 'center' } );
-      xdec = gx + 20;
-      ydec = gy;
-      for (i=0; i < maxrate/100; i++)   {
-         svg.line( gx, ydec, xdec, ydec).attr( { stroke: '#ffffff', 'stroke-width': '3' });
-         ydec = ydec+tick;
-      }
-      svg.line( gx, ydec, xdec, ydec).attr( { stroke: '#ffffff', 'stroke-width': '2' });
-      svg.text( xdec + 5, ydec+6, i).attr( { fill: '#ffffff', 'text-anchor': 'center' } );
-      this.VertSpeed =  svg.polygon( gx +',' +gy +' ' +(gx-30) +',' +(gy-10) +' ' +(gx-30) +',' +(gy+10) ).attr( {fill: '#fff'} );
+
+   //   svg.circle(x+250, y/2,300); // TODO use this arc for inop
+ 
+ svg.text(gx+20, gy+7, '0').attr(s.smallFont);
+  
+for ( i=0; i<steps; i++ ){
+  if ( i%5 === 0 ) {
+    svg.text(gx+22, gy+7, i ).attr(s.smallFont).animate({transform: 'r' +(i*degrees) +',' +(x+250)+',' +(y/2) }, 100);
+    svg.text(gx+22, gy+7, i).attr(s.smallFont).animate({transform: 'r-' +(i*degrees) +',' +(x+250)+',' +(y/2) }, 100);
+ svg.line( gx+13, y/2, gx, y/2 ).attr( { stroke: '#ffffff', 'stroke-width': 3 }).animate({ transform: 'r' +(i*degrees) +',' +(x+250)+',' +(y/2) }, 100);
+ svg.line( gx+13, y/2, gx, y/2 ).attr( { stroke: '#ffffff', 'stroke-width': 3 }).animate({ transform: 'r-' +(i*degrees) +',' +(x+250)+',' +(y/2) }, 100);
+  }
+ else { 
+ svg.line( gx+8, y/2, gx, y/2 ).attr( { stroke: '#ffffff', 'stroke-width': 2 }).animate({ transform: 'r' +(i*degrees) +',' +(x+250)+',' +(y/2) }, 100);
+ svg.line( gx+8, y/2, gx, y/2 ).attr( { stroke: '#ffffff', 'stroke-width': 2 }).animate({ transform: 'r-' +(i*degrees) +',' +(x+250)+',' +(y/2) }, 100);
+
+  }
+}
+ 
+      
+        
+// the needle
+VertSpeed = svg.line( gx+10, y/2, x+250, y/2 ).attr( {stroke:'#ffffff', 'stroke-width': '5'});        
         
         //INOP
       this.inop.vertspeed = svg.group(
-         svg.rect(gx-30, (gy-size), gx, size*2).attr( {fill: 'red', opacity: .8 }),
+  //       svg.rect(gx-30, (gy-size), gx, size*2).attr( {fill: 'red', opacity: .8 }),
          svg.text(gx+4, gy, "INOP").attr( s.cardinalFont )
          ).attr({display: 'none'});
         
         
       return function( rate ) {
-         if ( rate == null ) { return v.vertspeed }
+         if ( rate == null ) { return v.vertspeed; }
          if ( rate == 'inop') { this.inop.vertspeed.attr({display: 'inline'}); }
          else { this.inop.vertspeed.attr({display: 'none'}); }
          if ( rate > c.alarms.vsi.max || rate < c.alarms.vsi.min  ) { this.alarm.vertspeed.attr({display: 'inline'}); }
@@ -278,15 +340,10 @@ var Pi2D2 =  {
          y = s.screen.y;
          gx = s.vertspeed.x;
          gy = s.vertspeed.y;
-         maxrate = c.vsi.maxrate/1000;
-         size = 90;
-         step = size / maxrate;
-         tick = step / 1000;
-         this.VertSpeed.animate( { transform: 't0,' +( ( tick * rate ) *-1)  }, 500 );  
-         v.vertspeed.rate =  rate;
-         return  v.vertspeed;
-      }       
-   },
+ //        this.VertSpeed.animate({transform: 'r' + (rate/50) +',' +(x+250)+',' +(y/2) }, 100);
+         return ( v.vertspeed.rate = rate);
+      };
+},
 
 
 
@@ -304,8 +361,6 @@ var Pi2D2 =  {
                         svg.text( (x/2), (y/2), 'INOP').attr( s.cardinalFont )
                     ).attr( {display: 'none'});
 
-
-
       return function( pitch ) {
          if ( pitch == null ) { return v.pitch; }
          if ( pitch == 'inop' ) { this.inop.pitch.attr( {display: 'inline'}); }
@@ -320,67 +375,58 @@ var Pi2D2 =  {
             this.theworld.animate( { transform: 't0,'+(pitch*4) }, 100  );           
             }
          return ( v.pitch = pitch);
-      };
+      }
+      
    },
 
         
    roll: function(){
       x = s.screen.x;
       y = s.screen.y;
+      //TODO automate build
+      // hashes 0, 5, 10, 15, 20, 
       this.thewholeworld = svg.group( this.theworld,
                                     //Horizon Bar
                                     svg.rect( 260, 157.5, 95, 5 ).attr( {fill: '#ffde29' }),
                                     svg.rect( 125, 157.5,95, 5 ).attr( {fill: '#ffde29' }),
-                                    svg.circle( 240, 160, 5  ).attr({  fill: "#ffde29"}),
+  svg.circle( 240, 160, 9  ).attr({  stroke: "#ffde29", "stroke-width":  3, fill:'none'}),
                                     //Bank Pointer
-                                    svg.path( "m 230, 3 20, 0 -10 , 15").attr({  fill: "#ffffff"}),
-        
-//                                     svg.line( 220,  50, 260, 50 ).attr( { stroke: '#ffffff', 'stroke-width': '2' }),
-//                                      svg.line( 230,  60, 250,  60 ).attr( { stroke: '#ffffff', 'stroke-width': '2' }),
-//                                      svg.line( 220,  70, 260,  70 ).attr( { stroke: '#ffffff', 'stroke-width': '2' }),
-                                      svg.line( 200,  80, 280,  80 ).attr( { stroke: '#ffffff', 'stroke-width': '2' }),
+                                    svg.path( "m 230, 3 20, 0 -10 , 25").attr({  fill: "#ffffff"}),
+  svg.line( (x/2)-20,  60, (x/2)+20, 60 ).attr( { stroke: '#ffffff', 'stroke-width': '2' }),
+  svg.line( (x/2)-35,  80, (x/2)+35, 80 ).attr( { stroke: '#ffffff', 'stroke-width': '2' }),
+                        
                                       svg.text( 187, 85, '20').attr( s.smallFont ),
                                       svg.text( 292, 85, '20').attr( s.smallFont ),
-                                      
-                                      svg.line( 220,  90, 260,  90 ).attr( { stroke: '#ffffff', 'stroke-width': '2' }),
-                                      svg.line( 230, 100, 250, 100 ).attr( { stroke: '#ffffff', 'stroke-width': '2' }),
-                                      svg.line( 220, 110, 260, 110 ).attr( { stroke: '#ffffff', 'stroke-width': '2' }),
-                                      svg.line( 200, 120, 280, 120 ).attr( { stroke: '#ffffff', 'stroke-width': '2' }),
+
+  svg.line( (x/2)-20,  100, (x/2)+20, 100 ).attr( { stroke: '#ffffff', 'stroke-width': '2' }),
+  svg.line( (x/2)-35,  120, (x/2)+35, 120 ).attr( { stroke: '#ffffff', 'stroke-width': '2' }),
+
                                       svg.text( 187, 125, '10').attr( s.smallFont ),
                                       svg.text( 292, 125, '10').attr( s.smallFont ),
-        
-                                      svg.line( 220, 130, 260, 130 ).attr( { stroke: '#ffffff', 'stroke-width': '2' }),
-                                      svg.line( 230, 140, 250, 140 ).attr( { stroke: '#ffffff', 'stroke-width': '2' }),                                    
-                                      svg.line( 220, 150, 260, 150 ).attr( { stroke: '#ffffff', 'stroke-width': '2' }),
-                                      
-                                      svg.line( 220, 170, 260, 170 ).attr( { stroke: '#ffffff', 'stroke-width': '2' }),
-                                      svg.line( 230, 180, 250, 180 ).attr( { stroke: '#ffffff', 'stroke-width': '2' }),
-                                      svg.line( 220, 190, 260, 190 ).attr( { stroke: '#ffffff', 'stroke-width': '2' }),
-                                      svg.line( 200, 200, 280, 200 ).attr( { stroke: '#ffffff', 'stroke-width': '2' }),
+
+  svg.line( (x/2)-20,  140, (x/2)+20, 140 ).attr( { stroke: '#ffffff', 'stroke-width': '2' }),
+
+  svg.line( (x/2)-20,  180, (x/2)+20, 180 ).attr( { stroke: '#ffffff', 'stroke-width': '2' }),
+  svg.line( (x/2)-35,  200, (x/2)+35, 200 ).attr( { stroke: '#ffffff', 'stroke-width': '2' }),        
+
                                       svg.text( 187, 205, '10').attr( s.smallFont ),
                                       svg.text( 292, 205, '10').attr( s.smallFont ),
-                                      svg.line( 220, 210, 260, 210 ).attr( { stroke: '#ffffff', 'stroke-width': '2' }),
-                                      svg.line( 230, 220, 250, 220 ).attr( { stroke: '#ffffff', 'stroke-width': '2' }),
-                                      svg.line( 220, 230, 260, 230 ).attr( { stroke: '#ffffff', 'stroke-width': '2' }),
-                                      svg.line( 200, 240, 280, 240 ).attr( { stroke: '#ffffff', 'stroke-width': '2' }),
-                                      svg.text( 187, 245, '20').attr( s.smallFont ),
-                                      svg.text( 292, 245, '20').attr( s.smallFont )
-        
-//                                      svg.line( 220, 250, 260, 250 ).attr( { stroke: '#ffffff', 'stroke-width': '2' }),
-//                                      svg.line( 230, 260, 250, 260 ).attr( { stroke: '#ffffff', 'stroke-width': '2' })                                 
-                                    );
+
+  svg.line( (x/2)-20,  220, (x/2)+20, 220 ).attr( { stroke: '#ffffff', 'stroke-width': '2' })
+ );
            
         
-        ////////////////////////////////////////////////////////////////////////////////
         ////////// Bank Angle Hashes (short ones)
-           var a = ["90", "100", "110", "120", "130", "140", "160", "170", "190", "200", "220", "230", "240", "250", "260", "270" ];
+//TODO rotate in place. cleaner.
+// put dot at 45 vs line
+           var a = [  "135", "160", "170", "190", "200", "225"];
            a.forEach(function(entry) {
               anglexinradians = (entry  * Math.PI / 180);
               startx = Math.sin(anglexinradians) * 130 + 240;
               starty = Math.cos(anglexinradians) * 130 + 160;   
               stopx  = Math.sin(anglexinradians) * 140 + 240;
               stopy  = Math.cos(anglexinradians) * 140 + 160;  
-              svg.line( startx, starty, stopx, stopy ).attr( { stroke: '#ffffff', 'stroke-width': '2' });
+              svg.line( startx, starty, stopx, stopy ).attr( { stroke: '#ffffff', 'stroke-width': '4' });
            });
            // Bank Angle Hashes (long ones)
            var a = ["120", "150",  "180", "210",  "240"];
@@ -390,13 +436,16 @@ var Pi2D2 =  {
               starty = Math.cos(anglexinradians) * 125 + 160;   
               stopx  = Math.sin(anglexinradians) * 145 + 240;
               stopy  = Math.cos(anglexinradians) * 145 + 160;  
-              svg.line( startx, starty, stopx, stopy ).attr( { stroke: '#ffffff', 'stroke-width': '2' });
+              svg.line( startx, starty, stopx, stopy ).attr( { stroke: '#ffffff', 'stroke-width': '4'});
            });
             // Edge Horizon marks that dont move.
             svg.rect( 90, 157.5, 30, 5 ).attr( {fill: '#ffde29' });
             svg.rect( 90, 157.5, 5, 15 ).attr( {fill: '#ffde29' });
             svg.rect( 360, 157.5, 30, 5 ).attr( {fill: '#ffde29' });
             svg.rect( 385, 157.5, 5, 15 ).attr( {fill: '#ffde29' });
+// Center Dot on sceen
+  svg.circle( (x/2),  (y/2), 6 ).attr( { fill: '#000' });
+
 //INOP
         this.inop.roll = svg.group(
                                 svg.circle((x/2), (y/2), 160).attr( {'fill': 'red', 'fill-opacity': .8} ),
@@ -413,7 +462,7 @@ var Pi2D2 =  {
             else { this.alarm.roll.attr({display: 'none'}); }
 
             this.thewholeworld.animate( { transform: 'r' +roll +',240,160' }, 100 );
-            return v.roll = roll;
+            return (v.roll = roll);
         };
     },
     
@@ -424,6 +473,7 @@ var Pi2D2 =  {
         Cy = s.compass.y;
         Cr = s.compass.r;
         y = s.screen.y;
+        x = s.screen.x;
         opacity = s.compass.opacity;
 
         //Build the compass
@@ -438,27 +488,30 @@ var Pi2D2 =  {
                                     +(Cx+10) +',' +((Cy-Cr)-5)
                                     ).attr( {fill: '#FF00FF'} );
 */
-         headingBug = compassRose.line(Cx, Cy, Cx, (y*.5) ).attr( { 'stroke-width': '8',stroke: '#FF00FF'} ); 
+         headingBug = compassRose.line(Cx, Cy, Cx, (Cy-Cr) ).attr( { 'stroke-width': '10',stroke: '#FF00FF'} ); 
 
-        compassRose.text( Cx, (Cy - Cr*.91), 'N').attr( s.cardinalFont );
+        compassRose.text( Cx, (Cy - Cr*.94), 'N').attr( s.cardinalFont );
        
         for (var i = 0; i < 36; i++) {
             var r = ( i * 10 );
-            var m = r/10;
+            var m = r;
             var font = s.compassFont;
             if ( Cr < 20 ) { font = { fill: '#ffffff', stroke: 'none', 'font-size': '10', 'text-anchor': 'middle' };}
-            if ( r == 90 ) { m = 'E'; font = s.cardinalFont; }
+            if ( r == 90 )  { m = 'E'; font = s.cardinalFont; }
             if ( r == 180 ) { m = 'S'; font = s.cardinalFont; }
             if ( r == 270 ) { m = 'W'; font = s.cardinalFont; }
-            compassRose.text( Cx, (Cy - Cr*.91), m).attr( font ).animate({ transform: 'r' +r+','+Cx+',' +Cy}, 100);
+            compassRose.text( Cx, (Cy - Cr*.94), m).attr( font ).animate({ transform: 'r' +r+','+Cx+',' +Cy}, 100);
         }
           
         for (var i = 0; i < 360; i++) {
-            y1 = (Cy - Cr*.87);
-            y2 = (Cy - Cr*.89);
-            
-            if ( i % 5 === 0 ) { y2 = (Cy - Cr*.91) }
-            compassRose.line( Cx, y2, Cx, y1 ).attr( { stroke: '#ffffff', 'stroke-width': '1' }).animate({ transform: 'r' +i +',' +Cx+',' +Cy }, 100);
+            y1 = (Cy - Cr*.89);
+            y2 = (Cy - Cr*.92);
+            width=1;
+            if ( i % 5 === 0 ) { 
+            	y2 = (Cy - Cr*.93); 
+            	width=4;
+            	}
+            compassRose.line( Cx, y2, Cx, y1 ).attr( { stroke: '#ffffff', 'stroke-width': width }).animate({ transform: 'r' +i +',' +Cx+',' +Cy }, 100);
         }
        
         //Compass Marker       
@@ -483,8 +536,8 @@ var Pi2D2 =  {
             else { this.alarm.compass.attr({display: 'none'}); }
             
             compassRose.animate( { transform: 'r' +heading*-1 +',' +Cx +',' +Cy }, 100 );  
-            return v.heading = heading;
-        }
+            return (v.heading = heading);
+        };
     
     },
 
@@ -493,22 +546,24 @@ var Pi2D2 =  {
         return function( bug ) {
             if ( bug == null ) { return v.headingBug }
             headingBug.animate( { transform: 'r' +bug +',' +Cx +',' +Cy }, 100 );
-            return v.headingBug = bug;
-        }    
+            return (v.headingBug = bug);
+        };    
     },
 
 
 
     altimeter: function() {
-        svg.rect( 410, 260, 63, 35).attr({fill: 'none', stroke: '#ffffff', 'stroke-width': '1' } );
+        svg.rect( 410, 260, 63, 35).attr({fill: 'black', opacity: .4 } );
         svg.text( 440, 270, 'Alt').attr( {fill: '#ffffff', stroke: 'none', 'font-size': '10', 'text-anchor': 'middle' });
+
+
         // TODO Make the number inputs be actual vs haing to *10 and /10 for decimals
         altBox = svg.text( 440, 290, v.altimeter).attr( {fill: '#ffffff', stroke: 'none', 'font-size': '20', 'text-anchor': 'middle', onclick: "setThis('altimeter', Pi2D2.altimeter() *100 );" });            
      
        return function( altimeter ){
             if ( altimeter == null ) { return v.altimeter; }
             altBox.attr( {text: altimeter } );
-            return v.altimeter = altimeter;
+            return (v.altimeter = altimeter);
           };
     },
 
@@ -591,10 +646,9 @@ var Pi2D2 =  {
 
             altitudeBug.animate( { transform: 't0,' +( (s.altitudeBug.step * ( altitude - v.altitudeBug ) ) )  }, 100 );  
 
-            return v.altitude = altitude;
+            return (v.altitude = altitude);
         };
     },
-
 ////////////////////////////////////////////////////////////////////////////////
    speed: function(  ){
         // Build speed
@@ -660,6 +714,6 @@ var Pi2D2 =  {
             asi.dial[1].animate( { transform: 'r' +Math.floor( speed / 10 )*36 +',' +asi.centers[1] +',' +y }, 200 );  
             asi.dial[2].animate( { transform: 'r' +Math.floor( speed / 1 )*36 +',' +asi.centers[2] +',' +y }, 200 );  
             return v.speed = speed;
-        }
+        };
     }
 };
