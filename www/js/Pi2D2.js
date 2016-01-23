@@ -95,7 +95,7 @@ var Pi2D2 =  {
       this.vertspeed = this.vertspeed();    
       this.cdi = this.cdi();
       this.glideslope = this.glideslope();
-    /*  
+    
       this.alarm.pitch = svg.group(
             svg.rect((x/2)-75, 50, 150, 50).attr( {fill: 'red', opacity: .9 }),
             svg.text((x/2), 90, "PITCH").attr( s.cardinalFont )
@@ -130,7 +130,7 @@ var Pi2D2 =  {
             svg.rect((x/2)-110, 50, 220, 50).attr( {fill: 'red', opacity: .9 }),
             svg.text((x/2), 90, "ALTITUDE").attr( s.cardinalFont )
             ).attr( { display: 'none'} );    
-   */
+   
    return 1;
    
    },
