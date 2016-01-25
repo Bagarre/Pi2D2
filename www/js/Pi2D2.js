@@ -56,8 +56,8 @@ var Pi2D2 =  {
    },
     
    inop: {
-//      cdi: {}, //todo
- //     glideslope: {}, //todo
+     cdi: {}, //todo
+     glideslope: {}, //todo
       gmeter: {},
       vertspeed: {},
       compass: {},
@@ -94,7 +94,7 @@ var Pi2D2 =  {
       this.gmeter = this.gmeter();
       this.vertspeed = this.vertspeed();    
 //      this.cdi = this.cdi();
-//      this.glideslope = this.glideslope();
+//     this.glideslope = this.glideslope();
     
       this.alarm.pitch = svg.group(
             svg.rect((x/2)-75, 50, 150, 50).attr( {fill: 'red', opacity: .9 }),
@@ -145,7 +145,23 @@ var Pi2D2 =  {
       steps = maxload+1; // ten steps
       degrees = 33/steps; // 2 degrees per step
 
-      svg.circle(-250, y/2,310).attr( { opacity: 0, onclick: 'Pi2D2.gmeter("reset")'}) ; // TODO use this arc for inop
+
+
+startX = -250;
+//startX = x/2;
+startY = y/2;
+radius = 306;
+startAngle = 339;
+endAngle = 28;
+
+        var x1 = startX + radius * Math.cos(Math.PI * startAngle/180);
+        var y1 = startY + radius * Math.sin(Math.PI * startAngle/180);
+        var x2 = startX + radius * Math.cos(Math.PI * endAngle/180);
+        var y2 = startY + radius * Math.sin(Math.PI * endAngle/180);
+
+        var pathString = "M"+ startX + " " + startY + " L" + x1 + " " + y1 + " A" + radius + " " + radius + " 0 0 1 " + x2 + " " + y2 + " z";
+
+svg.path( pathString ).attr( { opacity: .2, onclick: 'Pi2D2.gmeter("reset")'}) ; // TODO use this arc for inop
  
       for ( i=0; i<steps; i++ ){
          svg.line( gx-20, y/2, gx-10, y/2 ).attr( { stroke: '#ffffff', 'stroke-width': 2 }).animate({transform: 'r' +((i*degrees)+degrees) +',' +(-250)+',' +(y/2) }, 100);
@@ -169,9 +185,8 @@ this.GloadMaxNeg = svg.circle( gx-10, y/2, 5 ).attr( {stroke:'#ffffff', 'stroke-
         
 //INOP
       this.inop.gmeter = svg.group(
-        // TODO Need these to be Arcs now
-        // svg.rect(gx-25, (gy-size), gx, (size*2)).attr( {fill: 'red', opacity: .8 }),
-         svg.text(gx, gy, "INOP").attr( s.cardinalFont )
+        svg.path (pathString).attr( {fill: 'red', opacity: .8 })
+//         svg.text(gx, gy, "INOP").attr( s.cardinalFont )
       ).attr( {display: 'none'});
 
       return function( load ) {
@@ -220,7 +235,7 @@ this.GloadMaxNeg = svg.circle( gx-10, y/2, 5 ).attr( {stroke:'#ffffff', 'stroke-
       x = s.screen.x;
       y = s.screen.y;
    
-svg.rect( (x/2)-110, (y/2)+75, 220, 20).attr( {fill: 'black', opacity: .4 });
+svg.rect( (x/2)-110, (y/2)+75, 220, 20).attr( {fill: 'black', opacity: .9 });
 
 CDINeedle = svg.group(
 svg.line(240,230, 240, 260).attr({ 'stroke': '#00ff00', 'stroke-width': 8 }), 
@@ -265,7 +280,7 @@ return 1;
       x = s.screen.x;
       y = s.screen.y;
          
-      svg.rect( (x-80), (y/2)-95, 20, 190).attr( {fill: 'black', opacity: .4 });
+      svg.rect( (x-80), (y/2)-95, 20, 190).attr( {fill: 'black', opacity: .9 });
       svg.circle( (x-70), (y/2), 10).attr( {'stroke':'#ffffff', 'stroke-width':2, fill: 'none'});
       
       ILSNeedle = svg.group(
@@ -314,6 +329,32 @@ return 1;
       gx = s.vertspeed.x;
       gy = s.vertspeed.y;
 
+
+startX = x+250;
+//startX = x/2;
+startY = y/2;
+radius = 300;
+startAngle = 159;
+endAngle = 200;
+
+        var x1 = startX + radius * Math.cos(Math.PI * startAngle/180);
+        var y1 = startY + radius * Math.sin(Math.PI * startAngle/180);
+        var x2 = startX + radius * Math.cos(Math.PI * endAngle/180);
+        var y2 = startY + radius * Math.sin(Math.PI * endAngle/180);
+
+        var pathString = "M"+ startX + " " + startY + " L" + x1 + " " + y1 + " A" + radius + " " + radius + " 0 0 1 " + x2 + " " + y2 + " z";
+
+svg.path( pathString ).attr( { opacity: .2 });
+
+
+
+
+
+
+
+
+
+
    //   svg.circle(x+250, y/2,300); // TODO use this arc for inop
  
       svg.text(gx+20, gy+7, '0').attr(s.smallFont);
@@ -336,8 +377,9 @@ return 1;
         
         //INOP
       this.inop.vertspeed = svg.group(
+         svg.path( pathString ).attr( {fill: 'red', opacity: .8 })
   //       svg.rect(gx-30, (gy-size), gx, size*2).attr( {fill: 'red', opacity: .8 }),
-         svg.text(gx+4, gy, "INOP").attr( s.cardinalFont )
+//         svg.text(gx+4, gy, "INOP").attr( s.cardinalFont )
          ).attr({display: 'none'});
         
         
@@ -372,7 +414,6 @@ return 1;
       this.theworld = svg.group(// Center Dot on sceen
          svg.rect( -1000, -1000, 2000, 2000).attr({fill: '#004cff'} ),         
          svg.rect ( -1000, (y/2), 2000, 2000).attr({fill: '#54350a'} ),
-         svg.line( -500, (y/2), 1000, (y/2) ).attr( { stroke: '#ffffff', 'stroke-width': '1' }),
                                              //Horizon Bar
                                     svg.rect( 260, 157.5, 95, 5 ).attr( {fill: '#ffde29' }),
                                     svg.rect( 125, 157.5,95, 5 ).attr( {fill: '#ffde29' }),
@@ -381,8 +422,8 @@ return 1;
       );
       
       this.inop.pitch = svg.group(
-                        svg.circle((x/2), (y/2), 160).attr( {'fill': 'red', 'fill-opacity': .8} ),
-                        svg.text( (x/2), (y/2), 'INOP').attr( s.cardinalFont )
+                        svg.circle((x/2), (y/2), 160).attr( {'fill': 'red', 'fill-opacity': .8} )
+//                        svg.text( (x/2), (y/2), 'INOP').attr( s.cardinalFont )
                     ).attr( {display: 'none'});
 
       return function( pitch ) {
@@ -411,11 +452,14 @@ return 1;
       // hashes 0, 5, 10, 15, 20, 
       this.thewholeworld = svg.group( this.theworld,
        svg.circle( (x/2),  (y/2), 6 ).attr( { fill: '#fff' }),
+//         svg.line( -500, (y/2), 1000, (y/2) ).attr( { stroke: '#ffffff', 'stroke-width': '1' }),
   
                                     //Bank Pointer
 //                                    svg.path( "m 230, 3 20, 0 -10 , 25").attr({  fill: "#ffffff"}),
 
                                    svg.path( "m 225, 50 30, 0 -15 , -25").attr({  fill: "#ffffff"}),
+
+  svg.line( (x/2)-15,  y/2, (x/2)+15, y/2).attr( { stroke: '#ffffff', 'stroke-width': '3' }),
 
 
   svg.line( (x/2)-20,  60, (x/2)+20, 60 ).attr( { stroke: '#ffffff', 'stroke-width': '2' }),
@@ -479,8 +523,8 @@ return 1;
 
 //INOP
         this.inop.roll = svg.group(
-                                svg.circle((x/2), (y/2), 160).attr( {'fill': 'red', 'fill-opacity': .8} ),
-                                svg.text( (x/2), (y/2), 'INOP').attr( s.cardinalFont )
+                                svg.circle((x/2), (y/2), 145).attr( {'fill': 'red', 'fill-opacity': .8} )
+//                                svg.text( (x/2), (y/2), 'INOP').attr( s.cardinalFont )
                             ).attr( {display: 'none'});
         
     
@@ -651,8 +695,8 @@ return 1;
 
 //INOP
         this.inop.altitude = svg.group(
-                                svg.rect((x-43), (y-35), 200, 40).attr( {fill: 'red', opacity: .8 }),
-                                svg.text(x+30, (y), "INOP").attr( s.cardinalFont )
+                                svg.rect((x-43), (y-35), 200, 40).attr( {fill: 'red', opacity: .8 })
+                              //  svg.text(x+30, (y), "INOP").attr( s.cardinalFont )
                             ).attr( {display: 'none'});
 
         return function( altitude ){
@@ -729,8 +773,8 @@ return 1;
         svg.polygon( '15,38 35,28 35, 48').attr( {fill: '#fff'} );
 //INOP
         this.inop.speed = svg.group(
-                                svg.rect(x-75, (y-35), 125, 40).attr( {fill: 'red', opacity: .8 }),
-                                svg.text(x-10, (y), "INOP").attr( s.cardinalFont )
+                                svg.rect(x-75, (y-35), 125, 40).attr( {fill: 'red', opacity: .8 })
+//                                svg.text(x-10, (y), "INOP").attr( s.cardinalFont )
                             ).attr( {display: 'none'});
 
         return function ( speed ){
