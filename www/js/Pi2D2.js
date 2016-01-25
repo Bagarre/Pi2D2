@@ -48,8 +48,10 @@ var Pi2D2 =  {
       cdi: 0,
       glideslope: 0,
       altitude: 0,
+      slip: 0,
+      turn: 0,
       altimeter: 29.92,
-      heading: 0,
+      heading: 1,
       headingBug: 0,
 //      altitudeBug: 0,
       gload: {load: 1, maxpos: 1, maxneg: 1},
@@ -96,6 +98,8 @@ var Pi2D2 =  {
       this.vertspeed = this.vertspeed();    
 //      this.cdi = this.cdi();
 //     this.glideslope = this.glideslope();
+      this.slip = this.slipIndicator();
+      this.turn = this.turnIndicator();
     
       this.alarm.pitch = svg.group(
             svg.rect((x/2)-75, 50, 150, 50).attr( {fill: 'red', opacity: .9 }),
@@ -575,15 +579,15 @@ svg.path( pathString ).attr( { opacity: .2 });
             if ( r == 90 )  { m = 'E'; font = s.cardinalFont; }
             if ( r == 180 ) { m = 'S'; font = s.cardinalFont; }
             if ( r == 270 ) { m = 'W'; font = s.cardinalFont; }
-            compassRose.text( Cx, (Cy - Cr*.94), m).attr( font ).animate({ transform: 'r' +r+','+Cx+',' +Cy}, 100);
+            compassRose.text( Cx, (Cy - Cr*.95), m).attr( font ).animate({ transform: 'r' +r+','+Cx+',' +Cy}, 100);
         }
           
         for (var i = 0; i < 360; i++) {
-            y1 = (Cy - Cr*.89);
-            y2 = (Cy - Cr*.92);
+            y1 = (Cy - Cr*.90);
+            y2 = (Cy - Cr*.93);
             width=1;
             if ( i % 5 === 0 ) { 
-            	y2 = (Cy - Cr*.93); 
+            	y2 = (Cy - Cr*.94); 
             	width=4;
             	}
             compassRose.line( Cx, y2, Cx, y1 ).attr( { stroke: '#ffffff', 'stroke-width': width }).animate({ transform: 'r' +i +',' +Cx+',' +Cy }, 100);
@@ -607,23 +611,76 @@ svg.path( pathString ).attr( { opacity: .2 });
             if ( heading == null ) { return v.heading }
             if ( heading == 'inop' ) { this.inop.compass.attr( {display: 'inline'}); }
             else {  this.inop.compass.attr( {display: 'none'}); }
+            heading = ( (heading % 360)+360 ) %360; 
+
             if ( ( heading - v.headingBug ) > c.alarms.compass || ( v.headingBug - heading) > c.alarms.compass  ) { this.alarm.compass.attr({display: 'inline'}); }
             else { this.alarm.compass.attr({display: 'none'}); }
             
-            compassRose.animate( { transform: 'r' +heading*-1 +',' +Cx +',' +Cy }, 100 );  
+            compassRose.animate( { transform: 'r' +heading*-1 +',' +Cx +',' +Cy }, 1 );  
             return (v.heading = heading);
         };
     
     },
 
-    headingBug: function() {
-                
-        return function( bug ) {
-            if ( bug == null ) { return v.headingBug }
-            headingBug.animate( { transform: 'r' +bug +',' +Cx +',' +Cy }, 100 );
-            return (v.headingBug = bug);
-        };    
-    },
+   slipIndicator: function() {
+      
+      
+   },
+
+   turnIndicator: function() {
+      y = s.screen.y;
+      x = s.screen.x;
+ 
+ 
+ 
+ 
+      this.turnRight = svg.rect( (x/2)-200, 3, 200, 15 ).attr( { fill: '#fff' });
+      svg.group ( this.turnRight ).attr( { clip: svg.rect( (x/2)-3, 0, 150, 15) });
+  
+      this.turnLeft = svg.rect( (x/2), 3, 200, 20 ).attr( { fill: '#fff' });
+      svg.group( this.turnLeft ).attr({ clip: svg.rect( (x/2)-150, 0, 153, 15 ) });
+      
+      svg.rect( (x/2)+90  , 0, 3, 20 );
+      svg.rect( (x/2)+100  , 0, 3, 20 );
+
+
+      svg.rect( (x/2)-93  , 0, 3, 20 );
+      svg.rect( (x/2)-103  , 0, 3, 20 );
+
+      
+        
+      return function ( rate ) {
+         // 12 degrees per second = two minute turn
+         // 100 = 2 minute turn
+         if ( rate > 0 ) {
+            this.turnLeft.animate( { transform: 't0,0' }, 100 );  
+            this.turnRight.animate( { transform: 't' +rate*8.3 +',0' }, 100 );  
+         }
+         if ( rate < 0 ) {
+            this.turnRight.animate( { transform: 't0,0' }, 100 );  
+            this.turnLeft.animate( { transform: 't' +rate*8.3 +',0' }, 100 );  
+         }
+         if ( rate == 0 ) {
+            this.turnRight.animate( { transform: 't0,0' }, 100 );  
+            this.turnLeft.animate( { transform: 't0,0' }, 100 );  
+         }
+
+         return( v.turn = rate);
+         
+      };
+      
+      
+   },
+
+
+   /////////////////////////
+   headingBug: function() {
+      return function( bug ) {
+         if ( bug == null ) { return v.headingBug }
+         headingBug.animate( { transform: 'r' +bug +',' +Cx +',' +Cy }, 100 );
+         return (v.headingBug = bug);
+      };    
+   },
 
 
    ////////////////////////
