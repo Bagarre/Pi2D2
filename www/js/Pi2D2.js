@@ -11,7 +11,7 @@ var Pi2D2 =  {
    configs: {
       // things I expect the user will want to change
       vspeeds: { Vso: 55, Vsi: 45, Vfe: 100, Vno: 140, Vne: 160 },
-      gmeter: { maxload: 4},
+      gmeter: { maxload: 4 },
       vsi: { maxrate: 1000},
       alarms: {
          pitch: { max: 10, min: -10 },
@@ -35,8 +35,9 @@ var Pi2D2 =  {
       cardinalFont: { fill: '#ffffff', stroke: 'none', 'font-size': '40', 'text-anchor': 'middle' },
       compassFont: { fill: '#ffffff', stroke: 'none', 'font-size': '30', 'text-anchor': 'middle' },
       gmeter: { maxrate: 4, x: 50, y: 160, degrees: 120 },
-      vertspeed: {x: 430, y: 160 },
-      altitudeBug: { maxrange: 50 }
+      vertspeed: {x: 430, y: 160 }
+      
+//      altitudeBug: { maxrange: 50 }
    },
     
    values: {
@@ -50,7 +51,7 @@ var Pi2D2 =  {
       altimeter: 29.92,
       heading: 0,
       headingBug: 0,
-      altitudeBug: 0,
+//      altitudeBug: 0,
       gload: {load: 1, maxpos: 1, maxneg: 1},
       vertspeed: {rate: 0}
    },
@@ -141,8 +142,7 @@ var Pi2D2 =  {
       y = s.screen.y;
       gx = s.gmeter.x;
       gy = s.gmeter.y;
-      maxload = c.gmeter.maxload; // if 1000 fpm
-      steps = maxload+1; // ten steps
+      steps = c.gmeter.maxload+1; // ten steps
       degrees = 33/steps; // 2 degrees per step
 
 
@@ -642,25 +642,6 @@ svg.path( pathString ).attr( { opacity: .2 });
           };
     },
 
-   /////////////////////////////////////////////////////////////////////////////
-   altitudeBug: function() {
-
-      x = s.screen.x;
-      y = s.screen.y;
-      s.altitudeBug.step = 90 / s.altitudeBug.maxrange;;
-      // 1 foot == 1 step
-//      altitudeBug = svg.circle( (x*.86), (y/2), 15).attr( {fill: '#FF00FF'} ); 
-      altitudeBug = svg.circle( (x*.86), (y/2), 15).attr( {fill: '#ff00ff'} ); 
-
-      return function ( altBug ) {
-         if ( altBug == null ) { return v.altitudeBug; }
-         altitudeBug.animate( { transform: 't0,' +( (s.altitudeBug.step * ( v.altitude - altBug ) ) )  }, 100 );  
-            console.log('boo');
-
-         return  v.altitudeBug = altBug;
-      };
-      
-   },
 
     ////////////////////////////////////////////////////////////////////////////
     altitude: function( ) {
@@ -691,7 +672,8 @@ svg.path( pathString ).attr( { opacity: .2 });
                 alt.dial[j].text( (x+tX), y, i).attr( s.largeFont ).attr( { transform: 'r-' +r +','+alt.centers[j] +',' +y }, 1000 );
             }
         }
-       alt.window = svg.group( alt.dial[0], alt.dial[1], alt.dial[2], alt.dial[3], alt.dial[4] ).attr({ clip: svg.rect((x-43), (y-35), 200, 40), onclick: "setThis('altitudeBug', Pi2D2.altitude() )" });
+       alt.window = svg.group( alt.dial[0], alt.dial[1], alt.dial[2], alt.dial[3], alt.dial[4] ).attr({ clip: svg.rect((x-43), (y-35), 200, 40) });
+//, onclick: "setThis('altitudeBug', Pi2D2.altitude() )" });
 
 //INOP
         this.inop.altitude = svg.group(
@@ -714,13 +696,12 @@ svg.path( pathString ).attr( { opacity: .2 });
             alt.dial[4].animate( { transform: 'r' +Math.floor( correctedAltitude / 1 )*36 +',' +alt.centers[4] +',' +y }, 2 );  
 
    
-            if ( ( v.altitudeBug  - altitude ) > c.alarms.altitude || ( altitude - v.altitudeBug ) > c.alarms.altitude  ) {
+/*            if ( ( v.altitudeBug  - altitude ) > c.alarms.altitude || ( altitude - v.altitudeBug ) > c.alarms.altitude  ) {
                this.alarm.altitude.attr({display: 'inline'});
                }
             else { this.alarm.altitude.attr({display: 'none'}); }
-
             altitudeBug.animate( { transform: 't0,' +( (s.altitudeBug.step * ( altitude - v.altitudeBug ) ) )  }, 100 );  
-
+*/
             return (v.altitude = altitude);
         };
     },
