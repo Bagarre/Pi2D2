@@ -93,8 +93,8 @@ var Pi2D2 =  {
       this.altimeter = this.altimeter();
       this.gmeter = this.gmeter();
       this.vertspeed = this.vertspeed();    
-      this.cdi = this.cdi();
-      this.glideslope = this.glideslope();
+//      this.cdi = this.cdi();
+//      this.glideslope = this.glideslope();
     
       this.alarm.pitch = svg.group(
             svg.rect((x/2)-75, 50, 150, 50).attr( {fill: 'red', opacity: .9 }),
@@ -141,19 +141,30 @@ var Pi2D2 =  {
       y = s.screen.y;
       gx = s.gmeter.x;
       gy = s.gmeter.y;
+      maxload = c.gmeter.maxload; // if 1000 fpm
+      steps = maxload+1; // ten steps
+      degrees = 33/steps; // 2 degrees per step
 
-svg.text(gx, gy+7, '0').attr(s.smallFont);
+      svg.circle(-250, y/2,310).attr( { opacity: 0, onclick: 'Pi2D2.gmeter("reset")'}) ; // TODO use this arc for inop
+ 
+      for ( i=0; i<steps; i++ ){
+         svg.line( gx-20, y/2, gx-10, y/2 ).attr( { stroke: '#ffffff', 'stroke-width': 2 }).animate({transform: 'r' +((i*degrees)+degrees) +',' +(-250)+',' +(y/2) }, 100);
+         svg.line( gx-20, y/2, gx-10, y/2 ).attr( { stroke: '#ffffff', 'stroke-width': 2 }).animate({transform: 'r-' +((i*degrees)-degrees) +',' +(-250)+',' +(y/2) }, 100);
+         svg.text(gx, gy+7, i ).attr(s.smallFont).animate({transform: 'r' +((i*degrees)+degrees) +',' +(-250)+',' +(y/2) }, 100);
+         svg.text(gx, gy+7, i).attr(s.smallFont).animate({transform: 'r-' +((i*degrees)-degrees) +',' +(-250)+',' +(y/2) }, 100);
 
-for ( ii=0; ii<5; ii++ ){
-  svg.line( gx-20, y/2, gx-10, y/2 ).attr( { stroke: '#ffffff', 'stroke-width': 2 }).animate({ transform: 'r' +(ii*5) +',' +(-250)+',' +(y/2) }, 100);
-  svg.line( gx-20, y/2, gx-10, y/2 ).attr( { stroke: '#ffffff', 'stroke-width': 2 }).animate({ transform: 'r-' +(ii*5) +',' +(-250)+',' +(y/2) }, 100);
-  svg.text(gx, gy+7, ii).attr(s.smallFont).animate({transform: 'r' +(ii*5)+',' +(-250)+',' +(y/2) }, 100);
-  svg.text(gx, gy+7, ii).attr(s.smallFont).animate({transform: 'r-' +(ii*5)+',' +(-250)+',' +(y/2) }, 100);      
-}
+      }
         
-Gload = svg.line( gx-10, y/2, -250, y/2 ).attr( {stroke:'#ffffff', 'stroke-width': '5'});
-GloadMaxPos = svg.line( gx-10, y/2, -250, y/2 ).attr( {stroke:'#ffffff', 'stroke-width': '2'});
-GloadMaxNeg = svg.line( gx-10, y/2, -250, y/2 ).attr( {stroke:'#ffffff', 'stroke-width': '2'});
+
+
+svg.text(gx, gy+7, '0').attr(s.smallFont).animate({transform: 'r' +(degrees) +',' +(-250)+',' +(y/2) }, 100);
+
+
+this.Gload = svg.line( gx-10, y/2, -250, y/2 ).attr( {stroke:'#ffffff', 'stroke-width': '5'});
+this.GloadMaxPos = svg.circle( gx-10, y/2, 5 ).attr( {stroke:'#ffffff', 'stroke-width': '3', fill: '#ffffff' });
+this.GloadMaxNeg = svg.circle( gx-10, y/2, 5 ).attr( {stroke:'#ffffff', 'stroke-width': '3', fill: '#ffffff' });
+//this.GloadMaxPos = svg.line( gx-10, y/2, -250, y/2 ).attr( {stroke:'#ffffff', 'stroke-width': '2'});
+//this.GloadMaxNeg = svg.line( gx-10, y/2, -250, y/2 ).attr( {stroke:'#ffffff', 'stroke-width': '2'});
 
         
 //INOP
@@ -169,15 +180,18 @@ GloadMaxNeg = svg.line( gx-10, y/2, -250, y/2 ).attr( {stroke:'#ffffff', 'stroke
          y = s.screen.y;
          gx = s.gmeter.x;
          gy = s.gmeter.y;
-         step = s.gmeter.degrees / s.gmeter.maxrate;
+         maxload = c.gmeter.maxload; // if 1000 fpm
+         steps = maxload+1; // ten steps
+         degrees = 33/steps; // 2 degrees per step
+
             
          if (load == 'reset' ) {
             v.gload.load =  1;
             v.gload.maxpos = 1;
             v.gload.maxneg = 1;
-            this.GloadMaxPos.animate( { transform: 't0,' +( ( step * 1) *-1)  }, 100 );  
-            this.GLoadMaxNeg.animate( { transform: 't0,' +( ( step * 1 ) *-1 )  }, 100 );  
-            this.GLoad.animate( { transform: 't0,' +( ( step * 1 ) *-1)  }, 100 );  
+            this.GloadMaxPos.animate({transform: 'r0,' +(-250)+',' +(y/2) }, 100);  
+            this.GloadMaxNeg.animate({transform: 'r0,' +(-250)+',' +(y/2) }, 100);  
+            this.Gload.animate({transform: 'r0,' +(-250)+',' +(y/2) }, 100);  
             return v.gload;
          }
 
@@ -187,27 +201,26 @@ GloadMaxNeg = svg.line( gx-10, y/2, -250, y/2 ).attr( {stroke:'#ffffff', 'stroke
          if ( load > c.alarms.gload.max || load < c.alarms.gload.min  ) { this.alarm.gmeter.attr({display: 'inline'}); }
          else {this.alarm.gmeter.attr({display: 'none'}); }
 
-
-         this.GLoad.animate( { transform: 't0,' +( ( step * load ) *-1)  }, 100 );              
-            if ( v.gload.maxpos < load ){
+         this.Gload.animate({transform: 'r' +((load*degrees)-degrees)*-1 +',' +(-250)+',' +(y/2) }, 100);
+         
+            if ( load > v.gload.maxpos ){
                v.gload.maxpos = load;
-               this.GloadMaxPos.animate( { transform: 't0,' +( ( step * load ) *-1)  }, 100 );  
+               this.GloadMaxPos.animate({transform: 'r' +((load*degrees)-degrees)*-1 +',' +(-250)+',' +(y/2) }, 100);  
             }
-            if ( v.gload.maxneg > load ){
+            if ( load < v.gload.maxneg ){
                v.gload.maxneg = load;
-               this.GLoadMaxNeg.animate( { transform: 't0,' +( ( step * load ) *-1 )  }, 100 );  
+               this.GloadMaxNeg.animate({transform: 'r' +((load*degrees)-degrees)*-1 +',' +(-250)+',' +(y/2) }, 100);  
             }                    
             return (v.gload.load =  load);
          };
    },
    
-   
+   //////////////////
    cdi: function() {
       x = s.screen.x;
       y = s.screen.y;
    
-//CDI HERE FOR NOW
- svg.rect( (x/2)-110, (y/2)+75, 220, 20).attr( {fill: 'black', opacity: .4 });
+svg.rect( (x/2)-110, (y/2)+75, 220, 20).attr( {fill: 'black', opacity: .4 });
 
 CDINeedle = svg.group(
 svg.line(240,230, 240, 260).attr({ 'stroke': '#00ff00', 'stroke-width': 8 }), 
@@ -229,67 +242,69 @@ svg.line(240,230, 240, 260).attr({ 'stroke': '#00ff00', 'stroke-width': 8 }),
  svg.circle( (x/2)-100, 245, 5).attr( {'stroke':'#ffffff', 'stroke-width':2, fill: 'none'});
    
 
-          //TODO MOVE THIS TO CDI
+// VOR Box
 svg.rect( 65, 198, 60, 60).attr({ opacity: .4, fill: 'black' } );
 svg.text( 95, 215, '117.95').attr( {fill: '#ffffff', stroke: 'none', 'font-size': '15', 'text-anchor': 'middle' });
 svg.text( 95, 235, '039').attr( {fill: '#ffffff', stroke: 'none', 'font-size': '20', 'text-anchor': 'middle' });         
 svg.text( 95, 250, 'TO').attr( {fill: '#ffffff', stroke: 'none', 'font-size': '15', 'text-anchor': 'middle' });        
-     
+
+//GPS Box
 svg.rect( 65, 124, 60, 24).attr({ opacity: .4, fill: 'black' } );
 svg.text( 95, 143, 'GPS').attr( {fill: '#ffffff', stroke: 'none', 'font-size': '20', 'text-anchor': 'middle' });       
 
+
+
+// TODO Make the update function
+
 return 1;
-
-
-     
    },   
    
    
+///////////////////////////
    glideslope: function() {
       x = s.screen.x;
       y = s.screen.y;
-   
-//ILS HERE FOR NOW
-svg.rect( (x-80), (y/2)-95, 20, 190).attr( {fill: 'black', opacity: .4 });
-
- svg.circle( (x-70), (y/2), 10).attr( {'stroke':'#ffffff', 'stroke-width':2, fill: 'none'});
-
-ILSNeedle = svg.group(
-   svg.line(395, (y/2), 425, (y/2)).attr({ 'stroke': '#00ff00', 'stroke-width': 8 }), 
-   svg.circle( (x-70), (y/2), 5).attr( { fill: '#000'})
-
-);
-
-//ILSNeedle.animate({transform: 't0,40'},100);
-
-
- svg.circle( (x-70), (y/2)+22, 5).attr( {'stroke':'#ffffff', 'stroke-width':2, fill: 'none'});
- svg.circle( (x-70), (y/2)+44, 5).attr( {'stroke':'#ffffff', 'stroke-width':2, fill: 'none'});
- svg.circle( (x-70), (y/2)+66, 5).attr( {'stroke':'#ffffff', 'stroke-width':2, fill: 'none'});
- svg.circle( (x-70), (y/2)+88, 5).attr( {'stroke':'#ffffff', 'stroke-width':2, fill: 'none'});
- 
- svg.circle( (x-70), (y/2)-22, 5).attr( {'stroke':'#ffffff', 'stroke-width':2, fill: 'none'});
- svg.circle( (x-70), (y/2)-44, 5).attr( {'stroke':'#ffffff', 'stroke-width':2, fill: 'none'});
- svg.circle( (x-70), (y/2)-66, 5).attr( {'stroke':'#ffffff', 'stroke-width':2, fill: 'none'});
- svg.circle( (x-70), (y/2)-88, 5).attr( {'stroke':'#ffffff', 'stroke-width':2, fill: 'none'});
-
-svg.rect( 335,184, 60, 24).attr({fill: 'black', opacity: .5 } );
-svg.text( 365,203, 'VLOC').attr( {fill: '#ffffff', stroke: 'none', 'font-size': '20', 'text-anchor': 'middle' });       
-
-svg.rect( 320, 124, 75, 24).attr({fill: 'black', opacity: .5 } );
-svg.text( 358, 143, '15,000').attr( {fill: '#ffffff', stroke: 'none', 'font-size': '20', 'text-anchor': 'middle' });       
-
+         
+      svg.rect( (x-80), (y/2)-95, 20, 190).attr( {fill: 'black', opacity: .4 });
+      svg.circle( (x-70), (y/2), 10).attr( {'stroke':'#ffffff', 'stroke-width':2, fill: 'none'});
+      
+      ILSNeedle = svg.group(
+         svg.line(395, (y/2), 425, (y/2)).attr({ 'stroke': '#00ff00', 'stroke-width': 8 }), 
+         svg.circle( (x-70), (y/2), 5).attr( { fill: '#000'})
+      );
+      
+      //ILSNeedle.animate({transform: 't0,40'},100);
+      
+      
+      svg.circle( (x-70), (y/2)+22, 5).attr( {'stroke':'#ffffff', 'stroke-width':2, fill: 'none'});
+      svg.circle( (x-70), (y/2)+44, 5).attr( {'stroke':'#ffffff', 'stroke-width':2, fill: 'none'});
+      svg.circle( (x-70), (y/2)+66, 5).attr( {'stroke':'#ffffff', 'stroke-width':2, fill: 'none'});
+      svg.circle( (x-70), (y/2)+88, 5).attr( {'stroke':'#ffffff', 'stroke-width':2, fill: 'none'});
+      
+      svg.circle( (x-70), (y/2)-22, 5).attr( {'stroke':'#ffffff', 'stroke-width':2, fill: 'none'});
+      svg.circle( (x-70), (y/2)-44, 5).attr( {'stroke':'#ffffff', 'stroke-width':2, fill: 'none'});
+      svg.circle( (x-70), (y/2)-66, 5).attr( {'stroke':'#ffffff', 'stroke-width':2, fill: 'none'});
+      svg.circle( (x-70), (y/2)-88, 5).attr( {'stroke':'#ffffff', 'stroke-width':2, fill: 'none'});
+      
+      /// VLOC Box
+      svg.rect( 335,184, 60, 24).attr({fill: 'black', opacity: .5 } );
+      svg.text( 365,203, 'VLOC').attr( {fill: '#ffffff', stroke: 'none', 'font-size': '20', 'text-anchor': 'middle' });       
+      
+      // Altitude Box
+      svg.rect( 320, 124, 75, 24).attr({fill: 'black', opacity: .5 } );
+      svg.text( 358, 143, '15,000').attr( {fill: '#ffffff', stroke: 'none', 'font-size': '20', 'text-anchor': 'middle' });       
 
 
-//TODO
-//1. widget to cgange freq on VOR
-//2. Select GPS CDI Guidance. when doig this, GS will become altitude bug
+      
+      //TODO
+      //1. widget to cgange freq on VOR
+      //2. Select GPS CDI Guidance. when doig this, GS will become altitude bug
 
-return 1;
+      return 1;
    },
    
    
-    
+/////////////////////////    
    vertspeed: function(){
       x = s.screen.x;
       y = s.screen.y;
@@ -301,26 +316,23 @@ return 1;
 
    //   svg.circle(x+250, y/2,300); // TODO use this arc for inop
  
- svg.text(gx+20, gy+7, '0').attr(s.smallFont);
+      svg.text(gx+20, gy+7, '0').attr(s.smallFont);
   
-for ( i=0; i<steps; i++ ){
-  if ( i%5 === 0 ) {
-    svg.text(gx+22, gy+7, i ).attr(s.smallFont).animate({transform: 'r' +(i*degrees) +',' +(x+250)+',' +(y/2) }, 100);
-    svg.text(gx+22, gy+7, i).attr(s.smallFont).animate({transform: 'r-' +(i*degrees) +',' +(x+250)+',' +(y/2) }, 100);
- svg.line( gx+13, y/2, gx, y/2 ).attr( { stroke: '#ffffff', 'stroke-width': 3 }).animate({ transform: 'r' +(i*degrees) +',' +(x+250)+',' +(y/2) }, 100);
- svg.line( gx+13, y/2, gx, y/2 ).attr( { stroke: '#ffffff', 'stroke-width': 3 }).animate({ transform: 'r-' +(i*degrees) +',' +(x+250)+',' +(y/2) }, 100);
-  }
- else { 
- svg.line( gx+8, y/2, gx, y/2 ).attr( { stroke: '#ffffff', 'stroke-width': 2 }).animate({ transform: 'r' +(i*degrees) +',' +(x+250)+',' +(y/2) }, 100);
- svg.line( gx+8, y/2, gx, y/2 ).attr( { stroke: '#ffffff', 'stroke-width': 2 }).animate({ transform: 'r-' +(i*degrees) +',' +(x+250)+',' +(y/2) }, 100);
-
-  }
-}
- 
-      
+      for ( i=0; i<steps; i++ ){
+         if ( i%5 === 0 ) {
+            svg.text(gx+22, gy+7, i ).attr(s.smallFont).animate({transform: 'r' +(i*degrees) +',' +(x+250)+',' +(y/2) }, 100);
+            svg.text(gx+22, gy+7, i).attr(s.smallFont).animate({transform: 'r-' +(i*degrees) +',' +(x+250)+',' +(y/2) }, 100);
+            svg.line( gx+13, y/2, gx, y/2 ).attr( { stroke: '#ffffff', 'stroke-width': 3 }).animate({ transform: 'r' +(i*degrees) +',' +(x+250)+',' +(y/2) }, 100);
+            svg.line( gx+13, y/2, gx, y/2 ).attr( { stroke: '#ffffff', 'stroke-width': 3 }).animate({ transform: 'r-' +(i*degrees) +',' +(x+250)+',' +(y/2) }, 100);
+         }
+         else { 
+            svg.line( gx+8, y/2, gx, y/2 ).attr( { stroke: '#ffffff', 'stroke-width': 2 }).animate({ transform: 'r' +(i*degrees) +',' +(x+250)+',' +(y/2) }, 100);
+            svg.line( gx+8, y/2, gx, y/2 ).attr( { stroke: '#ffffff', 'stroke-width': 2 }).animate({ transform: 'r-' +(i*degrees) +',' +(x+250)+',' +(y/2) }, 100);      
+         }
+      }
         
-// the needle
-VertSpeed = svg.line( gx+10, y/2, x+250, y/2 ).attr( {stroke:'#ffffff', 'stroke-width': '5'});        
+      // VSI needle
+      this.VertSpeed = svg.line( gx+10, y/2, x+250, y/2 ).attr( {stroke:'#ffffff', 'stroke-width': '5'});        
         
         //INOP
       this.inop.vertspeed = svg.group(
@@ -340,22 +352,34 @@ VertSpeed = svg.line( gx+10, y/2, x+250, y/2 ).attr( {stroke:'#ffffff', 'stroke-
          y = s.screen.y;
          gx = s.vertspeed.x;
          gy = s.vertspeed.y;
+         maxrate = c.vsi.maxrate; // if 1000 fpm
+         steps = (maxrate/100)+1; // ten steps
+         degrees = 20/steps; // 2 degrees per step
+
+         this.VertSpeed.animate({ transform: 'r' +((rate/100)*degrees) +',' +(x+250)+',' +(y/2) }, 100);
+
  //        this.VertSpeed.animate({transform: 'r' + (rate/50) +',' +(x+250)+',' +(y/2) }, 100);
          return ( v.vertspeed.rate = rate);
       };
 },
 
 
-
+   ///////////////////
    pitch: function(){
       x = s.screen.x;
       y = s.screen.y;
       //Build the earth and sky (pitch)
-      this.theworld = svg.group(
+      this.theworld = svg.group(// Center Dot on sceen
          svg.rect( -1000, -1000, 2000, 2000).attr({fill: '#004cff'} ),         
          svg.rect ( -1000, (y/2), 2000, 2000).attr({fill: '#54350a'} ),
-         svg.line( -500, (y/2), 1000, (y/2) ).attr( { stroke: '#ffffff', 'stroke-width': '1' })
+         svg.line( -500, (y/2), 1000, (y/2) ).attr( { stroke: '#ffffff', 'stroke-width': '1' }),
+                                             //Horizon Bar
+                                    svg.rect( 260, 157.5, 95, 5 ).attr( {fill: '#ffde29' }),
+                                    svg.rect( 125, 157.5,95, 5 ).attr( {fill: '#ffde29' }),
+  svg.circle( 240, 160, 9  ).attr({  stroke: "#ffde29", "stroke-width":  3, fill:'none'})
+
       );
+      
       this.inop.pitch = svg.group(
                         svg.circle((x/2), (y/2), 160).attr( {'fill': 'red', 'fill-opacity': .8} ),
                         svg.text( (x/2), (y/2), 'INOP').attr( s.cardinalFont )
@@ -379,19 +403,21 @@ VertSpeed = svg.line( gx+10, y/2, x+250, y/2 ).attr( {stroke:'#ffffff', 'stroke-
       
    },
 
-        
+   //////////////////
    roll: function(){
       x = s.screen.x;
       y = s.screen.y;
       //TODO automate build
       // hashes 0, 5, 10, 15, 20, 
       this.thewholeworld = svg.group( this.theworld,
-                                    //Horizon Bar
-                                    svg.rect( 260, 157.5, 95, 5 ).attr( {fill: '#ffde29' }),
-                                    svg.rect( 125, 157.5,95, 5 ).attr( {fill: '#ffde29' }),
-  svg.circle( 240, 160, 9  ).attr({  stroke: "#ffde29", "stroke-width":  3, fill:'none'}),
+       svg.circle( (x/2),  (y/2), 6 ).attr( { fill: '#fff' }),
+  
                                     //Bank Pointer
-                                    svg.path( "m 230, 3 20, 0 -10 , 25").attr({  fill: "#ffffff"}),
+//                                    svg.path( "m 230, 3 20, 0 -10 , 25").attr({  fill: "#ffffff"}),
+
+                                   svg.path( "m 225, 50 30, 0 -15 , -25").attr({  fill: "#ffffff"}),
+
+
   svg.line( (x/2)-20,  60, (x/2)+20, 60 ).attr( { stroke: '#ffffff', 'stroke-width': '2' }),
   svg.line( (x/2)-35,  80, (x/2)+35, 80 ).attr( { stroke: '#ffffff', 'stroke-width': '2' }),
                         
@@ -412,7 +438,14 @@ VertSpeed = svg.line( gx+10, y/2, x+250, y/2 ).attr( {stroke:'#ffffff', 'stroke-
                                       svg.text( 187, 205, '10').attr( s.smallFont ),
                                       svg.text( 292, 205, '10').attr( s.smallFont ),
 
-  svg.line( (x/2)-20,  220, (x/2)+20, 220 ).attr( { stroke: '#ffffff', 'stroke-width': '2' })
+  svg.line( (x/2)-20,  220, (x/2)+20, 220 ).attr( { stroke: '#ffffff', 'stroke-width': '2' }),
+
+  svg.line( (x/2)-35,  240, (x/2)+35, 240 ).attr( { stroke: '#ffffff', 'stroke-width': '2' }),
+                                      svg.text( 187, 245, '20').attr( s.smallFont ),
+                                      svg.text( 292, 245, '20').attr( s.smallFont ),
+
+  svg.line( (x/2)-20,  260, (x/2)+20, 260 ).attr( { stroke: '#ffffff', 'stroke-width': '2' })
+
  );
            
         
@@ -439,12 +472,10 @@ VertSpeed = svg.line( gx+10, y/2, x+250, y/2 ).attr( {stroke:'#ffffff', 'stroke-
               svg.line( startx, starty, stopx, stopy ).attr( { stroke: '#ffffff', 'stroke-width': '4'});
            });
             // Edge Horizon marks that dont move.
-            svg.rect( 90, 157.5, 30, 5 ).attr( {fill: '#ffde29' });
-            svg.rect( 90, 157.5, 5, 15 ).attr( {fill: '#ffde29' });
-            svg.rect( 360, 157.5, 30, 5 ).attr( {fill: '#ffde29' });
-            svg.rect( 385, 157.5, 5, 15 ).attr( {fill: '#ffde29' });
-// Center Dot on sceen
-  svg.circle( (x/2),  (y/2), 6 ).attr( { fill: '#000' });
+            svg.rect( 100, 157.5, 30, 5 ).attr( {fill: '#ffde29' });
+            svg.rect( 100, 157.5, 5, 15 ).attr( {fill: '#ffde29' });
+            svg.rect( 340, 157.5, 30, 5 ).attr( {fill: '#ffde29' });
+            svg.rect( 365, 157.5, 5, 15 ).attr( {fill: '#ffde29' });
 
 //INOP
         this.inop.roll = svg.group(
@@ -467,7 +498,7 @@ VertSpeed = svg.line( gx+10, y/2, x+250, y/2 ).attr( {stroke:'#ffffff', 'stroke-
     },
     
 
-
+      ////////////////////
     compass: function(){
         Cx = s.compass.x;
         Cy = s.compass.y;
@@ -551,7 +582,7 @@ VertSpeed = svg.line( gx+10, y/2, x+250, y/2 ).attr( {stroke:'#ffffff', 'stroke-
     },
 
 
-
+   ////////////////////////
     altimeter: function() {
         svg.rect( 410, 260, 63, 35).attr({fill: 'black', opacity: .4 } );
         svg.text( 440, 270, 'Alt').attr( {fill: '#ffffff', stroke: 'none', 'font-size': '10', 'text-anchor': 'middle' });
