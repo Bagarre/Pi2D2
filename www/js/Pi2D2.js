@@ -640,25 +640,25 @@ svg.path( pathString ).attr( { opacity: .2 });
       this.turnLeft = svg.rect( (x/2), 3, 200, 20 ).attr( { fill: '#fff' });
       svg.group( this.turnLeft ).attr({ clip: svg.rect( (x/2)-150, 0, 153, 15 ) });
       
+      svg.rect( (x/2)+80  , 0, 3, 20 );
       svg.rect( (x/2)+90  , 0, 3, 20 );
-      svg.rect( (x/2)+100  , 0, 3, 20 );
 
 
+      svg.rect( (x/2)-83  , 0, 3, 20 );
       svg.rect( (x/2)-93  , 0, 3, 20 );
-      svg.rect( (x/2)-103  , 0, 3, 20 );
 
       
         
       return function ( rate ) {
-         // 12 degrees per second = two minute turn
-         // 100 = 2 minute turn
+         // 3 degrees per second = two minute turn
+         // 99 pixles = 2 minute turn
          if ( rate > 0 ) {
             this.turnLeft.animate( { transform: 't0,0' }, 100 );  
-            this.turnRight.animate( { transform: 't' +rate*8.3 +',0' }, 100 );  
+            this.turnRight.animate( { transform: 't' +rate*30 +',0' }, 100 );  
          }
          if ( rate < 0 ) {
             this.turnRight.animate( { transform: 't0,0' }, 100 );  
-            this.turnLeft.animate( { transform: 't' +rate*8.3 +',0' }, 100 );  
+            this.turnLeft.animate( { transform: 't' +rate*30 +',0' }, 100 );  
          }
          if ( rate == 0 ) {
             this.turnRight.animate( { transform: 't0,0' }, 100 );  
