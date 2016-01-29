@@ -95,6 +95,7 @@ var Pi2D2 =  {
       this.vertspeed = this.vertspeed();    
 //      this.cdi = this.cdi();
       this.glideslope = this.glideslope();
+      this.altitudeBug = this.altitudeBug();
       this.slip = this.slipIndicator();
       this.turn = this.turnIndicator();
        
@@ -275,11 +276,16 @@ var Pi2D2 =  {
 */
 
       // Altitude Box
-      svg.rect( 320, 124, 75, 24).attr({fill: 'black', opacity: .3 } );
-      svg.text( 358, 143, '15000').attr( {fill: '#ffffff', stroke: 'none', 'font-size': '20', 'text-anchor': 'middle' });       
-
+      this.altitudeBugBox = svg.g(
+         svg.rect( 320, 114, 75, 32).attr({fill: 'black', opacity: .3 } ),
+         svg.text( 335, 123, "ALT Bug").attr({fill: '#ffffff', stroke: 'none', 'font-size': '10' }),
+         this.altitudeBugText = svg.text( 358, 143, '0').attr( {fill: '#ffffff', stroke: 'none', 'font-size': '20', 'text-anchor': 'middle' })
+      );
+      
        return function( deflection ) {
          if ( deflection == null ) { return v.glideslope; }
+         if ( deflection > 5 ) { deflection = 5;  }
+         if ( deflection < -5 ) { deflection = -5;  }
          step = 22; // 25 pixles for one degree or 10 feet of deflection            
          this.ILSNeedle.animate( {transform: 't0,' +(step*deflection) }, 100);  
          return (v.glideslope =  deflection);
@@ -570,10 +576,7 @@ var Pi2D2 =  {
         };
     },
 
-   slipIndicator: function() {
-      
-      
-   },
+   slipIndicator: function() {},
 
    ///////////////////////////
    turnIndicator: function() {
@@ -585,21 +588,20 @@ var Pi2D2 =  {
       this.turnNeedle = svg.rect( (x/2)-8, 0, 16,15 ).attr( { fill: '#fff' });
 
       svg.g(
-      // The Dog Houses
-      svg.rect( (x/2)-13  , 0, 3, 15 ),
-      svg.rect( (x/2)+10  , 0, 3, 15 ),
-      svg.rect( (x/2)-13,  15, 26, 3 ),
-
-      svg.rect( (x/2)+77  , 0, 3, 18 ),
-      svg.rect( (x/2)+100  , 0, 3, 18 ),
-      svg.rect( (x/2)+80,  15, 20, 3 ),
-
-      svg.rect( (x/2)-80  , 0, 3, 18 ),
-      svg.rect( (x/2)-103  , 0, 3, 18 ),
-      svg.rect( (x/2)-100, 15, 20, 3 )
-);
+         // The Dog Houses
+         svg.rect( (x/2)-13  , 0, 3, 15 ),
+         svg.rect( (x/2)+10  , 0, 3, 15 ),
+         svg.rect( (x/2)-13,  15, 26, 3 ),
+   
+         svg.rect( (x/2)+77  , 0, 3, 18 ),
+         svg.rect( (x/2)+100  , 0, 3, 18 ),
+         svg.rect( (x/2)+80,  15, 20, 3 ),
+   
+         svg.rect( (x/2)-80  , 0, 3, 18 ),
+         svg.rect( (x/2)-103  , 0, 3, 18 ),
+         svg.rect( (x/2)-100, 15, 20, 3 )
+      );
       
-        
       return function ( rate ) {
          if ( rate == null ) { return v.rate; }
          // 3 degrees per second = two minute turn
@@ -618,6 +620,18 @@ var Pi2D2 =  {
          return (v.headingBug = bug);
       };    
    },
+
+   /////////////////////////
+   altitudeBug: function() {
+      return function( alt ) {
+         if ( alt == null ) { return v.altitudeBug }
+         this.altitudeBugText.attr( {text: alt } );
+         v.altitudeBug = alt;
+         this.altitude( this.altitude() );
+         return (v.altitudeBug);
+      };    
+   },
+
 
 
    ////////////////////////
@@ -665,8 +679,7 @@ var Pi2D2 =  {
                 alt.dial[j].text( (x+tX), y, i).attr( s.largeFont ).attr( { transform: 'r-' +r +','+alt.centers[j] +',' +y }, 1000 );
             }
         }
-       alt.window = svg.group( alt.dial[0], alt.dial[1], alt.dial[2], alt.dial[3], alt.dial[4] ).attr({ clip: svg.rect((x-43), (y-35), 200, 40) });
-//, onclick: "setThis('altitudeBug', Pi2D2.altitude() )" });
+       alt.window = svg.group( alt.dial[0], alt.dial[1], alt.dial[2], alt.dial[3], alt.dial[4] ).attr({ clip: svg.rect((x-43), (y-35), 200, 40), onclick: "setThis('altitudeBug', Pi2D2.altitude() )" });
 
 //INOP
       this.inop.altitude = svg.group(
@@ -699,8 +712,10 @@ var Pi2D2 =  {
                this.alarm.altitude.attr({display: 'inline'});
                }
             else { this.alarm.altitude.attr({display: 'none'}); }
-            altitudeBug.animate( { transform: 't0,' +( (s.altitudeBug.step * ( altitude - v.altitudeBug ) ) )  }, 100 );  
 */
+
+            this.glideslope( (altitude - v.altitudeBug)/10 );  
+
             return (v.altitude = altitude);
         };
     },
