@@ -1,7 +1,7 @@
 var pollStratux = false;
 var lastPoll = ( new Date).getTime();
 
-
+/*
 (function checkINOP() {
     setTimeout(function () {
         tick = (new Date).getTime() - lastPoll;
@@ -16,7 +16,7 @@ var lastPoll = ( new Date).getTime();
         checkINOP();
     }, 1000);
 })();
-
+*/
 
 
 
