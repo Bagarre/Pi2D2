@@ -6,6 +6,8 @@ function setZero() {
     Pi2D2.altitude(0);
     Pi2D2.compass(0);
     Pi2D2.headingBug(0);
+    Pi2D2.altitudeBug(0);
+    
     Pi2D2.gmeter(1);
     Pi2D2.turn(0);
     Pi2D2.cdi(0);

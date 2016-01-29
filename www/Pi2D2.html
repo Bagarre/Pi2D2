@@ -8,7 +8,11 @@
   
 </head>
 
-<body style="font-family: Verdana, Arial, Helvetica" onload="Pi2D2.init(); pollStratux = false;">
+<body style="font-family: Verdana, Arial, Helvetica" onload="Pi2D2.init();" >
+
+<!--
+<body style="font-family: Verdana, Arial, Helvetica" onload="Pi2D2.init(); pollStratux = true ;">
+-->
    
 <svg class="Pi2D2_SVG" id="Pi2D2_SVG" version="1.1" xmlns="http://www.w3.org/2000/svg" height="320px" width="480px">
   
@@ -22,37 +26,7 @@
 <!-- <script src="js/pollStratux.js"></script> -->
 <script src="js/test.js"></script>
 
- 
-
-<!-- 
- <div class="warning" id="v_speed_configs">
-   <H2 class="warning_header">V Speed Config</H2>
-   <center>
- <table class="vspeed_config" width="50%" border="1">
-   <tr>
-      <td>Vs0</td><td align="right">45</td><td align="center"><input type="button" value="Set" /> </td>
-   </tr>
-   <tr>
-      <td>Vs1</td><td align="right">40</td><td align="center"><input type="button" value="Set" /> </td>
-   </tr>
-   <tr>
-      <td>Vfe</td><td align="right">100</td><td align="center"><input type="button" value="Set" /> </td>
-   </tr>
-   <tr>
-      <td>Vno</td><td align="right">140</td><td align="center"><input type="button" value="Set" /> </td>
-   </tr>
-   <tr>
-      <td>Vs0</td><td align="right">160</td><td align="center"><input type="button" value="Set" /> </td>
-   </tr>
- </table>
-
-<div class="number_button" onclick="Head_number_c();">Esc </div>
-<div class="number_button" onclick="Head_number_c();">OK </div>
-
-   </center>
- </div>
--->
-  
+   
 <script>
 numcount=0;
 function number_write(x) {
