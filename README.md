@@ -33,11 +33,11 @@ Hope you think this is cool.
 Everything in the SVG works if you call it but only the following are working via test.js
 Pitch, Roll, Compass, Heading Bug and Altimeter
 * Heading Bug: Click the compass rose and set the heading bug
-* Altimeter: Click the altimeter to set. Altitude is based on pressure altimeter, not GPS
-
+* Altimeter: Click the altimeter box to set. Altitude is based on pressure altimeter, not GPS
+* AltimeterBug: Click the altitude top right to set the bug. Uses the glideslope to indicate. One mark per 10 feet.
 
 ### What is yet to work
-* G Meter: `Pi2D2.gmeter(int);` sets the bar. Max and Min are also marked, Click the hash to reset.
+* I've disabled all of the INOP indications for now. I think it was bogging down the system to have to check all the time.
 
 
 ### Version
@@ -103,17 +103,18 @@ Pi2D2.init();
 
 ### Updating the UI
 If you're using a Stratux, just set `pollStratux = true` after running `Pi2D2.init()`
-
+* You will need to uncomment the pollStratux.js file in Pi2D2.html
+* 
 If you want to roll your own from a different source.
 Calling a function with no value  returns the current set value.
 Calling with a value will set it to that value (and animate the screen)
-Calling it with 'inop' will set that instrument to INOP and red it out.
-The next time you call the function with a value, it will unINOP.
+(Not Working) - Calling it with 'inop' will set that instrument to INOP and red it out.
+(Not Working) - The next time you call the function with a value, it will unINOP.
 
 ```sh
    Pi2D2.roll( 30 ); -- sets roll to 30 degrees right.
    Pi2D2.pitch( 10 ); -- sets pitch 10 degrees up.
-   Pi2D2.altitude( 'inop' ); - blanks out the Altitude indicator with INOP;   
+   (Not Working) - Pi2D2.altitude( 'inop' ); - blanks out the Altitude indicator with INOP;   
    Pi2D2.altimeter( 29.92 ); - Sets the altimieter and will adjust altitude accordingly   
    Pi2D2.speed( 123 );
    Pi2D2.compass( 33 );
@@ -122,7 +123,7 @@ The next time you call the function with a value, it will unINOP.
    Pi2D2.gmeter( -1 );
 ```
 
-### INOP
+### INOP - NOT WORKING 
 When using `pollStratux=true;` we will set a given instrument `INOP` if we don't revieve an update for 3 seconds.
 At next successfull poll, we turn off the INOP indication.
 
